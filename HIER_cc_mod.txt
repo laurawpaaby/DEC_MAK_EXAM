@@ -1,0 +1,51 @@
+# HIER CC
+NOT GONNA USE MUCH OF DIS 
+
+#-------------------------------------------------------------------
+#-------------------  Individual level model -----------------------
+#-------------------------------------------------------------------
+
+model <- {
+  
+  ##### looping through condition
+  for (con in 1:2) {
+    
+    #### looping through subject, selecting priors:
+    
+    for (s in 1:nsubjects) {
+      
+      #--------------- Model priors ------------------------------------------------------
+      
+      alpha[s,g] ~ dgamma(shape_alpha[Nation[g]],rate_alpha[Nation[g]])T(0.001,)
+      rho[s,g] ~ dbeta(shape1_rho[Nation[g]],shape2_rho[Nation[g]])T(0.001,0.999) 
+      omega[s,g] ~ dbeta(shape1_omega[Nation[g]],shape2_omega[Nation[g]])T(0.001,0.999) 
+      
+      #beliefs about others on first trial - gamma-poisson distribution
+      Gb[s,1,g] ~ dpois(alpha[s,g])
+      
+      # modelled preference and first contribution - see below
+      p[s,1,g] <- (rho[s,g]*Gb[s,1,g])
+      c[s,1,g,1] ~ dpois(p[s,1,g])
+      
+    }
+    
+    #--------------- Implementation of CC model to the PIZZA GAME--------------------------------
+    
+    for (s in 1:nsubjects) {
+      
+      for (t in 2:ntrials) {
+        
+        #- Belief about group contribution
+        Gb[s,t,c] <- ((1-omega[s,c])*(Gb[s,t-1,c]))+(omega[s,c]*(Ga[s,t-1,c,1]))
+        
+        #- Contribution preference, given belief and matching preference rho  
+        p[s,t,c] <- rho[s,g]*Gb[s,t,c]
+        
+        #- Contribution as discrete sample from preferences
+        c[s,t,c,1] ~ dpois(p[s,t,c])
+      }
+      
+    }
+  }
+  
+}
