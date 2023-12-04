@@ -1,0 +1,92 @@
+---
+title: "Using simulate CC"
+author: "LAURA PAABY and DANIEL BLUMENKRANZ"
+date: "2023-12-04"
+output: html_document
+---
+
+### Simulating data using the function in Simulate_Func.R
+
+```{r}
+getwd()
+```
+
+
+```{r}
+source("Simulate_FUNC.R")
+```
+
+
+# Setting the parameters space from which we will simulate:
+```{r} 
+ntrials <- 1000
+```
+
+### Alpha 
+$\alpha$ = Initial belief about others’ contribution
+- based on this I suggest lambda = 5
+```{r}
+alpha <- c(1:10) # dictates the initial contribution of others (should be 0,3,6,9) => can either be manipulated somehow ?? or 0,1,2,3 and the rescaled. 
+
+desired_values <- c(0, 3, 6, 9) # trying for the dist to only holds these
+```
+
+
+```{r}
+for (i in alpha){
+  dist <- rpois(ntrials, lambda=i) 
+  filtered_values <- dist[dist %in% desired_values] # this is a very un-elegant way - cause samples for all but we pick the once we want 
+  hist(filtered_values, main = (sprintf("lambda = %s",i)))
+}
+
+```
+
+
+
+### Rho 
+$\rho$ = Conditional preferences or readiness to cooperate
+Is between 0 and 1.
+
+```{r}
+shape1 = c(1:5)
+shape2 = c(1:5)
+  
+
+for (i in shape1){
+  for (t in shape2){
+    rho_samples <- rbeta(n = ntrials, shape1 = i, shape2 = t) # this isn't plotted but it gives the values 
+    curve(dbeta(x, shape1 = i, shape2 = t), from = 0, to = 1, 
+    xlab = "x", ylab = "Density", main = (sprintf("shape1 = %s, shape2 = %s",i,t)))
+  }
+}
+
+?dbeta
+```
+
+```{r}
+#print(rho_samples)
+##### this is not so good - we need them to be stored in another way - they are just added one top of each other in the loop, but we need to do it in a way in which we can identify their shape parameters 
+```
+
+### Omega
+$\omega$ = Sensitivity or attentiveness to others’ contributions
+
+
+```{r}
+shape1 = c(3:8)
+shape2 = c(1:5)
+
+for (i in shape1){
+  for (t in shape2){
+    omega_samples <- rbeta(n = ntrials, shape1 = i, shape2 = t) # this isn't plotted but it gives the values 
+    curve(dbeta(x, shape1 = i, shape2 = t), from = 0, to = 1, 
+    xlab = "x", ylab = "Density", main = (sprintf("shape1 = %s, shape2 = %s",i,t)))
+  }
+}
+
+?dbeta
+```
+
+
+#### thought 
+- we need to figure out if there is anything that should determine these shapes? Josh uses nations, maybe maltreaded vs. treated can be used?
