@@ -13,6 +13,11 @@ getwd()
 
 
 ```{r}
+pacman::p_load(extraDistr, tidyverse)
+```
+
+
+```{r}
 source("Simulate_FUNC.R")
 ```
 
@@ -25,19 +30,21 @@ ntrials <- 1000
 ### Alpha 
 $\alpha$ = Initial belief about others’ contribution
 - based on this I suggest lambda = 5
-```{r}
-alpha <- c(1:10) # dictates the initial contribution of others (should be 0,3,6,9) => can either be manipulated somehow ?? or 0,1,2,3 and the rescaled. 
 
-desired_values <- c(0, 3, 6, 9) # trying for the dist to only holds these
+
+```{r}
+alpha<- c(1:11) # dictates the initial contribution of others (should be 0,3,6,9) => can either be manipulated somehow ?? or 0,1,2,3 and the rescaled. 
 ```
 
 
 ```{r}
+#### inspecting the outcome dist 
 for (i in alpha){
-  dist <- rpois(ntrials, lambda=i) 
-  filtered_values <- dist[dist %in% desired_values] # this is a very un-elegant way - cause samples for all but we pick the once we want 
+  dist <- rtpois(ntrials, lambda=i, a = 0, b = 4) 
+  filtered_values <- dist#[dist %in% desired_values] # this is a very un-elegant way - cause samples for all but we pick the once we want 
   hist(filtered_values, main = (sprintf("lambda = %s",i)))
 }
+
 
 ```
 
@@ -48,19 +55,10 @@ $\rho$ = Conditional preferences or readiness to cooperate
 Is between 0 and 1.
 
 ```{r}
-shape1 = c(1:5)
-shape2 = c(1:5)
-  
+rho <- seq(from = 0, to = 1, by =.1)
+rho
 
-for (i in shape1){
-  for (t in shape2){
-    rho_samples <- rbeta(n = ntrials, shape1 = i, shape2 = t) # this isn't plotted but it gives the values 
-    curve(dbeta(x, shape1 = i, shape2 = t), from = 0, to = 1, 
-    xlab = "x", ylab = "Density", main = (sprintf("shape1 = %s, shape2 = %s",i,t)))
-  }
-}
 
-?dbeta
 ```
 
 ```{r}
@@ -70,23 +68,71 @@ for (i in shape1){
 
 ### Omega
 $\omega$ = Sensitivity or attentiveness to others’ contributions
-
-
 ```{r}
-shape1 = c(3:8)
-shape2 = c(1:5)
-
-for (i in shape1){
-  for (t in shape2){
-    omega_samples <- rbeta(n = ntrials, shape1 = i, shape2 = t) # this isn't plotted but it gives the values 
-    curve(dbeta(x, shape1 = i, shape2 = t), from = 0, to = 1, 
-    xlab = "x", ylab = "Density", main = (sprintf("shape1 = %s, shape2 = %s",i,t)))
-  }
-}
-
-?dbeta
+omega <- seq(from = 0, to = 1, by =.1)
+omega
 ```
 
 
-#### thought 
-- we need to figure out if there is anything that should determine these shapes? Josh uses nations, maybe maltreaded vs. treated can be used?
+# LOOPING OVER THE PARAMETERS TO SIMULATE:
+```{r}
+source("Simulate_FUNC.R")
+
+
+empty_frame <- data.frame()
+
+for (a in alpha){
+  for (r in rho){
+    for (o in omega){
+      
+    contri <- hier_cc_sim(a,r,o)  
+  
+    new_row <- c(a, r, o, contri)
+    empty_frame <- rbind(empty_frame, new_row) 
+    }
+  }
+}
+```
+
+
+
+#### subset for plotting:
+```{r}
+plot_dat <- empty_frame %>% 
+  select(-c("X0", "X1", "X0.1"))
+
+plot_wide <- t(plot_dat) 
+
+col <- data.frame(1:12)
+
+dat <- cbind(plot_wide, col) %>% 
+  rename(trial = "X1.12")
+```
+
+
+```{r}
+
+plot(x = dat$trial, y = dat$`1`, type = "l", ylim = c(0,5))
+
+for (s in seq(2:1331)){
+  lines(x = dat$trial, y= dat$`s`)
+}
+```
+
+
+
+```{r}
+dat_col <- colnames(dat)
+
+dat %>% 
+  ggplot(aes(x = trial, y = dat_col[0:10])) +
+  geom_line()
+
+
+dat %>%
+  gather(key = "variable", value = "value", 1:100) %>%
+  ggplot(aes(x = trial, y = value, color = variable)) +
+  geom_line()
+```
+
+
