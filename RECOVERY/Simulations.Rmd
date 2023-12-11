@@ -33,7 +33,7 @@ $\alpha$ = Initial belief about others’ contribution
 
 
 ```{r}
-alpha<- c(1:11) # dictates the initial contribution of others (should be 0,3,6,9) => can either be manipulated somehow ?? or 0,1,2,3 and the rescaled. 
+alpha<- c(1:5) # dictates the initial contribution of others (should be 0,3,6,9) => can either be manipulated somehow ?? or 0,1,2,3 and the rescaled. 
 ```
 
 
@@ -55,9 +55,8 @@ $\rho$ = Conditional preferences or readiness to cooperate
 Is between 0 and 1.
 
 ```{r}
-rho <- seq(from = 0, to = 1, by =.1)
+rho <- seq(from = 0.1, to = .90, by =.1)
 rho
-
 
 ```
 
@@ -69,7 +68,7 @@ rho
 ### Omega
 $\omega$ = Sensitivity or attentiveness to others’ contributions
 ```{r}
-omega <- seq(from = 0, to = 1, by =.1)
+omega <- seq(from = 0.1, to = .90, by =.1)
 omega
 ```
 
@@ -134,5 +133,60 @@ dat %>%
   ggplot(aes(x = trial, y = value, color = variable)) +
   geom_line()
 ```
+
+
+
+# Group simulations by HIER func:
+making the population mean - this is done by taking the median of the possible values each of the parameters can hold 
+(this solely our decision - no theory sorry)
+```{r}
+#### find the true pop mean 
+pop_alpha <- 3 # this is the mean between 1-5
+pop_rho <- .5
+pop_omega <- .5 
+
+#### lets now define the difference that might be between the group parameters:
+dif_alpha <- seq(0,2,.20)
+dif_rho <- seq(0,0.6,.10)
+dif_omega <- seq(0,0.6,.10)
+
+```
+
+
+#### Maltreated (MT)
+Set space for sigma and mus for each parameter: 
+```{r}
+#### this dictates the rest
+mu_alpha 
+for (i in dif_alpha)
+
+
+mu_rho
+mu_omega
+sigma_alpha
+sigma_rho
+sigma_omega
+```
+
+#### Non-maltreated (NMT)
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
