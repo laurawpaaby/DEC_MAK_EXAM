@@ -1,0 +1,54 @@
+##### JAGS MODEL #####
+###### considerations: what to truncate and why ????
+
+model {
+
+  ##### SETTING PRIORS FOR EACH PARAMETER TO BE RECOVERED##### 
+  mu_alpha ~ priors
+  mu_omega ~ priors
+  mu_rho ~ priors
+   
+  ######  group sigma  ##### 
+  sigma_alpha ~ priors
+  sigma_omega ~ priors
+  sigma_rho ~ priors
+   
+
+  ###### SUBJECT LOOP ##### 
+   
+  for (s in 1:nsubs){                             
+    alpha[s] ~ dnorm(mu_alpha, 1/simga_alpha)
+    rho[s] ~ dnorm(mu_rho, 1/simga_rho)
+    omega[s] ~ dnorm(mu_omega, 1/sigma_omega)
+    
+    ###### IMPLEMENTING CC MODEL ##### 
+    
+    ## Gb for first trial
+    Gb[s,1] ~ dpois(1,alpha)
+    
+    # simulating behavior for subject s in each trial
+    for (t in 1:12) {
+      
+      if (t != 1){
+        
+        # calculate Gb (belief about group contribution)
+        Gb[s,t] <- ((1-omega)*(Gb[s,t-1]))+(omega*(real_Ga[s,t-1]))
+        
+        # calculate poisson parameter
+        p <- rho*Gb[s,t]
+        
+        # sample contribution from poisson
+        contri[s, t] ~ extraDistr::rtpois(1,p,0,3) ### OOOOBS MF HOW TO MAKE TRUNC D POIS 
+      }
+      
+      else {
+        
+        # calculate poisson parameter - first trial
+        p <- rho*Gb[s,1]
+        
+        # sample contribution from poisson - first trial
+        contri[s, t] ~ extraDistr::rtpois(1,p,0,3) ### OOOOBS MF HOW TO MAKE TRUNC D POIS 
+      }
+    }
+  }
+}
