@@ -1,6 +1,6 @@
 #### Simulating data for parameter recovery ####
 
-hier_cc_sim <- function(alpha, rho, omega){
+cc_sim <- function(alpha, rho, omega){
   
   
   ######## THE COMPUTER CONTRIBUTIONS OF TWO SUBJECTS - Ga

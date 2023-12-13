@@ -13,7 +13,7 @@ getwd()
 
 
 ```{r}
-pacman::p_load(extraDistr, tidyverse)
+pacman::p_load(extraDistr, tidyverse, truncnorm, cascsim)
 ```
 
 
@@ -147,38 +147,78 @@ pop_omega <- .5
 
 #### lets now define the difference that might be between the group parameters:
 dif_alpha <- seq(0,2,.20)
-dif_rho <- seq(0,0.6,.10)
-dif_omega <- seq(0,0.6,.10)
+dif_rho <- seq(0,.75,.10)
+dif_omega <- seq(0,.75,.10)
+
+#### number of simulations
+nsims <- 100
+
+#### sigma 
+sigma_alpha <- 1.25
+sigma_omega <- .25
+sigma_rho <- .25
 
 ```
 
 
-#### Maltreated (MT)
-Set space for sigma and mus for each parameter: 
+# Run the simulation:
+
 ```{r}
-#### this dictates the rest
-mu_alpha 
-for (i in dif_alpha)
-
-
-mu_rho
-mu_omega
-sigma_alpha
-sigma_rho
-sigma_omega
+source("HIER_simulation_FUNC.R")
 ```
 
-#### Non-maltreated (NMT)
+```{r}
+compute_mean <- function(pop_mean, dif, mt=FALSE){
+  if (mt){  mean = pop_mean - (dif/2) }
+  else { mean = pop_mean + (dif/2) }
+  
+  return(mean)
+}
+```
+
+
+#### MT_
+
+
+```{r}
+nmt_dat <- list()
+mt_dat <- list()
+
+for (i in 1:nsims){
+  
+  # sample group difference for all params
+  dif_alpha <- runif(1,0,2)
+  dif_rho <- runif(1, 0, .75)
+  dif_omega <- runif(1, 0, .75)
+  
+  # calculate group means
+  nmt_mu_alpha <- compute_mean(pop_alpha, dif_alpha)
+  mt_mu_alpha <- compute_mean(pop_alpha, dif_alpha, mt=T)
+  
+  nmt_mu_rho <- compute_mean(pop_rho, dif_rho)
+  mt_mu_rho <- compute_mean(pop_rho, dif_rho, mt=T)
+  
+  nmt_mu_omega <- compute_mean(pop_omega, dif_omega)
+  mt_mu_omega <- compute_mean(pop_omega, dif_omega, mt=T)
+  
+  ##### ---------- RUNNING THE FUNCTION  ------------ ##### 
+  nmt_contris <- hier_cc_sim(150, nmt_mu_alpha, nmt_mu_rho, nmt_mu_omega, sigma_alpha, sigma_rho, sigma_omega)
+  
+  nmt_dat[[i]] <- nmt_contris
+  
+  mt_contris <- hier_cc_sim(150, mt_mu_alpha, mt_mu_rho, mt_mu_omega, sigma_alpha, sigma_rho, sigma_omega)
+  
+  mt_dat[[i]] <- mt_contris
+  
+}
+
+```
+
+
+##### plotting:
 ```{r}
 
 ```
-
-
-
-
-
-
-
 
 
 
