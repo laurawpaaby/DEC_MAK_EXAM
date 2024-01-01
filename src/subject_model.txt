@@ -1,0 +1,31 @@
+model {
+
+  for (s in nsub) {
+  
+    # parameter priors
+    alpha[s] ~ dgamma(0.1,0.1)
+    rho[s] ~ dbeta(1,1)T(0.001,0.999)
+    omega[s] ~ dbeta(1,1)T(0.001,0.999)
+    
+    # Gb for first trial
+    Gb[s,1] ~ dpois(alpha[s])
+    
+    # modelled preference and first contribution
+    p[s,1] <- (rho[s]*Gb[s,1])
+    c[s,1] ~ dpois(p[s,1])
+    
+    # modelled preference and contribution for remaining trials
+    for (t in 2:12) {
+      
+      # belief about group contribution
+      Gb[s,t] <- ((1-omega[s])*(Gb[s,t-1]))+(omega[s]*(Ga[t-1]))
+      
+      # contribution preference
+      p[s,t] <- rho[s]*Gb[s,t]
+      
+      # contribution
+      c[s,t] ~ dpois(p[s,t])
+    }
+  }
+}
+
