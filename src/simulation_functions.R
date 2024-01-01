@@ -1,5 +1,15 @@
 #### SUBJECT SIMULATION
 
+compute_Ga <- function(){
+  # calculate Ga: trial-wise average contribution of other players
+  s1_cont <- c(9,9,9,9,3,0,0,0,9,9,9,9)
+  s2_cont <- c(9,6,6,6,0,0,0,0,3,0,0,0)
+  matrix_cont <- matrix(c(s1_cont,s2_cont), 12, 2)
+  Ga <- rowMeans(matrix_cont)
+  
+  return(Ga)
+}
+
 cc_sim <- function(nsub, alpha, rho, omega, Ga){
   
   # empty array for simulated subject contributions 
