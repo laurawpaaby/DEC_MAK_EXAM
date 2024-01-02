@@ -104,12 +104,13 @@ for (i in 1:ndiff) {
   params <- c("diff_alpha", "diff_rho", "diff_omega")
   
   start_time = Sys.time()
-  samples <- jags(data = data_list,
+  samples <- jags.parallel(data = data_list,
                   inits=NULL,
                   parameters.to.save = params,
                   model.file ="group_diff_model_no_JZS.R", 
                   n.chains = 3,
-                  n.iter=5000, n.burnin=1000, n.thin=1) #, n.cluster=3)
+                  n.iter=5000, n.burnin=1000, n.thin=1,
+                  jags.seed=626)
   
   end_time = Sys.time()
   duration = end_time - start_time

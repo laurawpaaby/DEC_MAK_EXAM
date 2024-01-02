@@ -54,12 +54,13 @@ params <- c("diff_alpha", "diff_rho", "diff_omega")
 
 # run JAGS
 start_time = Sys.time()
-samples <- jags(data = data_list,
-                inits=NULL,
-                parameters.to.save = params,
-                model.file ="group_diff_model.R", 
-                n.chains = 3,
-                n.iter=5000, n.burnin=1000, n.thin=1) #, n.cluster=3)
+samples <- jags.parallel(data = data_list,
+                         inits=NULL,
+                         parameters.to.save = params,
+                         model.file ="group_diff_model.R", 
+                         n.chains = 3,
+                         n.iter=5000, n.burnin=1000, n.thin=1,
+                         jags.seed = 626)
 
 end_time = Sys.time()
 duration = end_time - start_time
@@ -70,6 +71,8 @@ save(samples, file = "model_output/group_diff_estimation.RData")
 
 # plot posterior distribution of each parameter
 plot(samples) # PRETTIFY
+
+# LOOK AT MODULE4/GROUP COMPARISON/ORL_COMPARE.R for savage dickey example
 
 print("[INFO]: Finished. Saved model output.")
 

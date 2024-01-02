@@ -46,12 +46,13 @@ params <- c("omega", "rho", "alpha")
 
 print("[INFO]: Parameter estimation...")
 start_time = Sys.time()
-samples <- jags(data = data_list,
-                inits=NULL,
-                parameters.to.save = params,
-                model.file ="subject_model.txt", 
-                n.chains = 3,
-                n.iter=5000, n.burnin=1000, n.thin=1) #, n.cluster=3)
+samples <- jags.parallel(data = data_list,
+                        inits=NULL,
+                        parameters.to.save = params,
+                        model.file ="subject_model.txt", 
+                        n.chains = 3,
+                        n.iter=5000, n.burnin=1000, n.thin=1,
+                        jags.seed = 626)
 
 end_time = Sys.time()
 duration = end_time - start_time
