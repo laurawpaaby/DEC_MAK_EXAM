@@ -3,7 +3,7 @@ model {
   for (s in nsub) {
   
     # parameter priors
-    alpha[s] ~ dgamma(0.1,0.1)
+    alpha[s] ~ dgamma(4,2)
     rho[s] ~ dbeta(1,1)T(0.001,0.999)
     omega[s] ~ dbeta(1,1)T(0.001,0.999)
     
