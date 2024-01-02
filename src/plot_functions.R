@@ -13,17 +13,26 @@ label_parsed <- function(x) {
 }
 
 
-
 label_parsed_delta <- function(x) {
-  parsed_param <- gsub("alpha", "\U03B1", x)
-  parsed_param <- gsub("rho", "\U03C1", parsed_param)
-  parsed_param <- gsub("omega", "\U03C9", parsed_param)
-  
-  parsed_param <- paste0("\U0394", parsed_param)
-  
+  parsed_param <- gsub("alpha", "\U0394\U03B1", x)
+  parsed_param <- gsub("rho", "\U0394\U03C1", parsed_param)
+  parsed_param <- gsub("omega", "\U0394\U03C9", parsed_param)
+
   parsed_param
-  
+
 }
+
+
+#label_parsed_delta <- function(x) {
+#  parsed_param <- gsub("alpha", "\U03B1", x)
+#  parsed_param <- gsub("rho", "\U03C1", parsed_param)
+#  parsed_param <- gsub("omega", "\U03C9", parsed_param)
+  
+#  parsed_param <- paste0("\U0394", parsed_param)
+  
+#  parsed_param
+  
+#}
 
 
 
@@ -60,10 +69,10 @@ sub_recov_plot <- function(df){
     geom_point() +
     geom_abline(intercept = 0, slope = 1, color = "black", lwd = 0.2) +
     theme_bw() +
-    facet_wrap(~ parameter, scales = "free", labeller = label_parsed) +
+    facet_wrap(~ label_parsed(parameter), scales = "free") +
     theme(strip.background = element_rect(fill = "transparent", colour = NA),
-          strip.text = element_text(size = 15, face = "bold"),
-          axis.title = element_text(size = 10),
+          strip.text = element_text(size = 18, face = "bold"),
+          axis.title = element_text(size = 15),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank()) +
     labs(x = "True", y = "Recovered")
@@ -83,9 +92,9 @@ diff_recov_plot <- function(dfs) {
       geom_point(aes(color = true_mid)) +
       geom_abline(intercept = 0, slope = 1, color = "black", lwd = 0.2) +
       theme_bw() +
-      facet_wrap(~ parameter, ncol = 1, labeller = label_parsed_delta) +
+      facet_wrap(~ label_parsed_delta(parameter), ncol = 1)#, labeller = label_parsed_delta) +
       theme(strip.background = element_rect(fill = "transparent", colour = NA),
-            strip.text = element_text(size = 15, face = "bold"),
+            strip.text = element_text(size = 18, face = "bold"),
             axis.title = element_text(size = 8),
             legend.position = c(0.78, 0.08),
             legend.direction = "horizontal",
