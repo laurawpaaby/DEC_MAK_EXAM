@@ -1,6 +1,6 @@
 model {
 
-  for (s in nsub) {
+  for (s in 1:nsub) {
   
     # parameter priors
     alpha[s] ~ dgamma(4,2)

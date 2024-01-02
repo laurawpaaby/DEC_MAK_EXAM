@@ -4,9 +4,7 @@
 print("[INFO]: Loading packages.")
 library(R2jags)
 library(parallel)
-library(extraDistr)
 library(tidyverse)
-library(ggplot2)
 
 source("src/simulation_functions.R")
 source("src/plot_functions.R")

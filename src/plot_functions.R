@@ -1,3 +1,6 @@
+library(ggplot2)
+library(patchwork)
+
 label_parsed <- function(x) {
   parsed_param <- gsub("alpha", "\U03B1", x)
   parsed_param <- gsub("rho", "\U03C1", parsed_param)
@@ -51,23 +54,17 @@ sim_sub_plot <- function(c){
 
 sub_recov_plot <- function(df){
   
-  gg_l = lapply(dfs, function(x) {
-    
-    ggplot(x, aes(true_diff, recov_diff)) +
-      geom_point() +
-      geom_abline(intercept = 0, slope = 1, color = "black", lwd = 0.2) +
-      theme_bw() +
-      facet_wrap(~ parameter, ncol = 1, labeller = label_parsed) +
-      theme(strip.background = element_rect(fill = "transparent", colour = NA),
-            strip.text = element_text(size = 15, face = "bold"),
-            axis.title = element_text(size = 8),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank()) +
-      labs(x = "True", y = "Recovered")
-    
-  })
-  
-  plot <- wrap_plots(gg_l, ncol = 3, nrow = 1)
+  ggplot(df, aes(true, recov)) +
+    geom_point() +
+    geom_abline(intercept = 0, slope = 1, color = "black", lwd = 0.2) +
+    theme_bw() +
+    facet_wrap(~ parameter, ncol = 3, scales = "free", labeller = label_parsed) +
+    theme(strip.background = element_rect(fill = "transparent", colour = NA),
+          strip.text = element_text(size = 15, face = "bold"),
+          axis.title = element_text(size = 10),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank()) +
+    labs(x = "True", y = "Recovered")
   
   # save
   ggsave("plots/sub_recov.png", width = 12, height = 4.3)
