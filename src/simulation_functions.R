@@ -59,21 +59,21 @@ group_cc_sim <- function(nsubjects, mu_alpha, mu_rho, mu_omega, Ga){
   group_contributions <- array(NA, c(nsubjects, 12))
   
   # alpha
-  tau_alpha ~ dgamma(0.01,0.01)
-  sigma_alpha <- 1/sqrt(tau_alpha[i]) 
+  tau_alpha <- 1 # mean of dgamma(0.01,0.01)
+  sigma_alpha <- 1/sqrt(tau_alpha) 
   
   rate_alpha <- ( mu_alpha + sqrt( mu_alpha^2 + 4*sigma_alpha^2 ) )/
     (2*sigma_alpha^2) 
   shape_alpha <- 1 + mu_alpha * rate_alpha
   
   # rho
-  sigma_rho ~ dunif(1,100)
+  sigma_rho <- 50 # from dunif(1,100)
   
   shape1_rho <- (mu_rho) * sigma_rho
   shape2_rho <- (1 - mu_rho) * sigma_rho
   
   # omega
-  sigma_omega ~ dunif(1,100)
+  sigma_omega <- 50 # from dunif(1,100)
   
   shape1_omega <- (mu_omega) * sigma_omega
   shape2_omega <- (1 - mu_omega) * sigma_omega
@@ -82,9 +82,9 @@ group_cc_sim <- function(nsubjects, mu_alpha, mu_rho, mu_omega, Ga){
   for (s in 1:nsubjects){
     
     # sample parameters
-    alpha ~ dgamma(shape_alpha,rate_alpha)T(0.001,)
-    rho ~ dbeta(shape1_rho,shape2_rho)T(0.001,0.999) 
-    omega ~ dbeta(shape1_omega,shape2_omega)T(0.001,0.999)
+    alpha <- rltrgamma(1, shape_alpha,rate_alpha, trunc=0.001)
+    rho <- rtbeta(1, shape1_rho,shape2_rho, min=0.001, max=0.999) 
+    omega <- rtbeta(1, shape1_omega,shape2_omega, min=0.001, max=0.999)
     
     # simulating the subject's behavior based on the sampled parameters
     s_contributions <- cc_sim(alpha, rho, omega, Ga)

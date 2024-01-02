@@ -3,6 +3,8 @@
 # load libraries
 library(R2jags)
 library(extraDistr)
+library(IMIFA)
+library(cascsim)
 library(tidyverse)
 library(ggplot2)
 library(patchwork)
