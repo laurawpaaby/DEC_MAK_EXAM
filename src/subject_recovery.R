@@ -1,6 +1,7 @@
 #### SIMULATE SUBJECTS AND RECOVER SUBJECT-LEVEL PARAMETERS ####
 
 # load libraries
+print("[INFO]: Loading packages.")
 library(R2jags)
 library(extraDistr)
 library(tidyverse)
@@ -43,6 +44,7 @@ data_list <- list(
 
 params <- c("omega", "rho", "alpha")
 
+print("[INFO]: Parameter estimation...")
 start_time = Sys.time()
 samples <- jags(data = data_list,
                 inits=NULL,
@@ -53,7 +55,7 @@ samples <- jags(data = data_list,
 
 end_time = Sys.time()
 duration = end_time - start_time
-print(paste("[INFO]: Duration of model estimation was", round(duration, 2)))
+print(paste("[INFO]: Duration of estimation was", round(duration, 2)))
 
 # save samples
 save(samples, file = "model_output/sub_recov_samples.RData")
@@ -77,6 +79,8 @@ df <- data.frame(
 
 # visualize recovered parameters vs. true parameters
 sub_recov_plot(df)
+
+print("[INFO]: Finished.")
 
 
 
