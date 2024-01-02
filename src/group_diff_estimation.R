@@ -2,6 +2,7 @@
 
 # load libraries
 library(R2jags)
+library(parallel)
 library(extraDistr)
 library(tidyverse)
 library(ggplot2)
@@ -9,7 +10,7 @@ library(ggplot2)
 set.seed(626)
 
 # load data
-data <- read.csv("../pgg_bayes2023-12-06.csv")
+data <- read.csv("pgg_bayes2023-12-06.csv")
 
 # subtract 1 from all contributions
 data <- data %>%
@@ -57,7 +58,7 @@ start_time = Sys.time()
 samples <- jags.parallel(data = data_list,
                          inits=NULL,
                          parameters.to.save = params,
-                         model.file ="group_diff_model.R", 
+                         model.file ="src/group_diff_model.R", 
                          n.chains = 3,
                          n.iter=5000, n.burnin=1000, n.thin=1,
                          jags.seed = 626)
@@ -67,7 +68,7 @@ duration = end_time - start_time
 print(paste("[INFO]: Duration of model estimation was", round(duration, 2)))
 
 # save samples
-save(samples, file = "model_output/group_diff_estimation.RData")
+save(samples, file = "jags_output/group_diff_estimation.RData")
 
 # plot posterior distribution of each parameter
 plot(samples) # PRETTIFY

@@ -2,6 +2,7 @@
 
 # load libraries
 library(R2jags)
+library(parallel)
 library(extraDistr)
 library(IMIFA)
 library(cascsim)
@@ -9,8 +10,8 @@ library(tidyverse)
 library(ggplot2)
 library(patchwork)
 
-source(simulation_functions.R)
-source(plot_functions.R)
+source("src/simulation_functions.R")
+source("src/plot_functions.R")
 
 set.seed(626)
 
@@ -107,7 +108,7 @@ for (i in 1:ndiff) {
   samples <- jags.parallel(data = data_list,
                   inits=NULL,
                   parameters.to.save = params,
-                  model.file ="group_diff_model_no_JZS.R", 
+                  model.file ="src/group_diff_model.R", 
                   n.chains = 3,
                   n.iter=5000, n.burnin=1000, n.thin=1,
                   jags.seed=626)
@@ -137,7 +138,7 @@ recov_df <- data.frame(parameter=factor(rep(c("alpha", "rho", "omega"), each=ndi
                        recov_diff=c(diff_alpha_recov, diff_rho_recov, diff_omega_recov),
                        true_mid=c(true_alpha_mid, true_rho_mid, true_omega_mid))
 
-save(recov_df, file="recov_df.RData")
+save(recov_df, file="jags_output/recov_df.RData")
 
 recov_dfs <- split(df, f = df$parameter)
 

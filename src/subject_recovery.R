@@ -3,12 +3,13 @@
 # load libraries
 print("[INFO]: Loading packages.")
 library(R2jags)
+library(parallel)
 library(extraDistr)
 library(tidyverse)
 library(ggplot2)
 
-source(simulation_functions.R)
-source(plot_functions.R)
+source("src/simulation_functions.R")
+source("src/plot_functions.R")
 
 set.seed(626)
 
@@ -31,7 +32,6 @@ omega <- runif(nsub,0.1,0.9)
 # simulate subjects
 sim_data <- cc_sim(nsub, alpha, rho, omega, Ga)
 c <- sim_data$c
-Gb <- sim_data$Gb
 
 # visualize simulated subjects
 sim_sub_plot(c)
@@ -49,7 +49,7 @@ start_time = Sys.time()
 samples <- jags.parallel(data = data_list,
                         inits=NULL,
                         parameters.to.save = params,
-                        model.file ="subject_model.txt", 
+                        model.file ="src/subject_model.txt", 
                         n.chains = 3,
                         n.iter=5000, n.burnin=1000, n.thin=1,
                         jags.seed = 626)
@@ -59,7 +59,7 @@ duration = end_time - start_time
 print(paste("[INFO]: Duration of estimation was", round(duration, 2)))
 
 # save samples
-save(samples, file = "model_output/sub_recov_samples.RData")
+save(samples, file = "jags_output/sub_recov_samples.RData")
 
 # extract recovered parameters
 alpha_recov <- array(NA, c(nsub))
