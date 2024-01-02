@@ -1,6 +1,8 @@
 library(ggplot2)
 library(patchwork)
 
+
+
 label_parsed <- function(x) {
   parsed_param <- gsub("alpha", "\U03B1", x)
   parsed_param <- gsub("rho", "\U03C1", parsed_param)
@@ -58,7 +60,7 @@ sub_recov_plot <- function(df){
     geom_point() +
     geom_abline(intercept = 0, slope = 1, color = "black", lwd = 0.2) +
     theme_bw() +
-    facet_wrap(~ parameter, ncol = 3, scales = "free", labeller = label_parsed) +
+    facet_wrap(~ parameter, scales = "free", labeller = label_parsed) +
     theme(strip.background = element_rect(fill = "transparent", colour = NA),
           strip.text = element_text(size = 15, face = "bold"),
           axis.title = element_text(size = 10),
