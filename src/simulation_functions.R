@@ -82,9 +82,9 @@ group_cc_sim <- function(nsubjects, mu_alpha, mu_rho, mu_omega, Ga){
   for (s in 1:nsubjects){
     
     # sample parameters
-    alpha <- rltrgamma(1, shape_alpha,rate_alpha, trunc=0.001)
-    rho <- rtbeta(1, shape1_rho,shape2_rho, min=0.001, max=0.999) 
-    omega <- rtbeta(1, shape1_omega,shape2_omega, min=0.001, max=0.999)
+    alpha <- IMIFA::rltrgamma(1, shape_alpha,rate_alpha, trunc=0.001)
+    rho <- cascsim::rtbeta(1, shape1_rho,shape2_rho, min=0.001, max=0.999) 
+    omega <- sascsim::rtbeta(1, shape1_omega,shape2_omega, min=0.001, max=0.999)
     
     # simulating the subject's behavior based on the sampled parameters
     s_contributions <- cc_sim(alpha, rho, omega, Ga)
