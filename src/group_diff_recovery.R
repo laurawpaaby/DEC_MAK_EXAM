@@ -16,7 +16,7 @@ MPD <- function(x) {
 }
 
 # calculate Ga: trial-wise average contribution of other players
-Ga <- compute_Ga()
+Ga <- compute_Ga(ntrials=12)
 
 # Create an empty list for storing simulated data
 ndiff <- 10
@@ -105,7 +105,7 @@ for (i in 1:ndiff) {
   samples <- jags.parallel(data = data_list,
                   inits=NULL,
                   parameters.to.save = params,
-                  model.file ="src/group_diff_model.txt", 
+                  model.file ="src/group_diff_model.txt", # remember to change ntrials in txt
                   n.chains = 3,
                   n.iter=5000, n.burnin=1000, n.thin=1,
                   jags.seed=626)

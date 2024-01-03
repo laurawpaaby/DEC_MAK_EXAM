@@ -17,7 +17,7 @@ MPD <- function(x) {
 }
 
 # calculate Ga: trial-wise average contribution of other players
-Ga <- compute_Ga()
+Ga <- compute_Ga(ntrials=12)
 
 # set number of subjects to simulate
 nsub <- 100
@@ -28,9 +28,8 @@ rho <- runif(nsub,0.1,0.9)
 omega <- runif(nsub,0.1,0.9)
 
 # simulate subjects
-sim_data <- cc_sim(nsub, alpha, rho, omega, Ga, ntrials=12)
+sim_data <- cc_sim(nsub, alpha, rho, omega, Ga)
 c <- sim_data$c
-Ga <- sim_data$Ga
 
 # visualize simulated subjects
 #sim_sub_plot(c)

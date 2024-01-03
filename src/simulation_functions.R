@@ -3,19 +3,33 @@ library(IMIFA)
 library(cascsim)
 library(truncnorm)
 
-compute_Ga <- function(){
+compute_Ga <- function(ntrials=ntrials){
   # calculate Ga: trial-wise average contribution of other players
   s1_cont <- c(9,9,9,9,3,0,0,0,9,9,9,9)
   s2_cont <- c(9,6,6,6,0,0,0,0,3,0,0,0)
   matrix_cont <- matrix(c(s1_cont,s2_cont), 12, 2)
   Ga <- rowMeans(matrix_cont)
   
+  # repeat Ga according to ntrials
+  if (ntrials != 12){
+    rest <- round(((ntrials/12 - floor(ntrials/12))*12), 1)
+    if (rest != 0){
+      Ga <- c(rep(Ga, floor(ntrials/12)), Ga[1:rest])
+    }
+    else {
+      Ga <- rep(Ga, ntrials/12)
+    }
+  }
+  
   return(Ga)
 }
 
 #### SUBJECT SIMULATION
 
-cc_sim <- function(nsub, alpha, rho, omega, Ga, ntrials=12){
+cc_sim <- function(nsub, alpha, rho, omega, Ga){
+  
+  # number of trials
+  ntrials <- length(Ga)
   
   # empty array for simulated subject contributions 
   c <- array(NA, c(nsub, ntrials))
@@ -52,7 +66,7 @@ cc_sim <- function(nsub, alpha, rho, omega, Ga, ntrials=12){
     }
   }
   
-  data <- list(c = c, Gb = Gb, Ga = Ga)
+  data <- list(c = c, Gb = Gb)
   
   return(data)
   
@@ -61,13 +75,10 @@ cc_sim <- function(nsub, alpha, rho, omega, Ga, ntrials=12){
 
 #### GROUP SIMULATION 
 
-group_cc_sim <- function(nsub, mu_alpha, mu_rho, mu_omega, Ga, ntrials=12){ 
-  
-  # empty arrays to fill for all subjects: 
-  group_contributions <- array(NA, c(nsub, ntrials))
+group_cc_sim <- function(nsub, mu_alpha, mu_rho, mu_omega, Ga){ 
   
   # alpha
-  tau_alpha <- 1 # mean of dgamma(0.01,0.01)
+  tau_alpha <- 1 # from dgamma(0.01,0.01)
   sigma_alpha <- 1/sqrt(tau_alpha) 
   
   rate_alpha <- ( mu_alpha + sqrt( mu_alpha^2 + 4*sigma_alpha^2 ) )/
@@ -92,7 +103,7 @@ group_cc_sim <- function(nsub, mu_alpha, mu_rho, mu_omega, Ga, ntrials=12){
   omega <- cascsim::rtbeta(nsub, shape1_omega, shape2_omega, min=0.001, max=0.999)
   
   # simulating the subject's behavior based on the sampled parameters
-  sim <- cc_sim(nsub, alpha, rho, omega, Ga, ntrials=ntrials)
+  sim <- cc_sim(nsub, alpha, rho, omega, Ga)
   
   # sample contribution from poisson
   group_contributions <- sim$c
@@ -102,15 +113,15 @@ group_cc_sim <- function(nsub, mu_alpha, mu_rho, mu_omega, Ga, ntrials=12){
 
 
 
-group_cc_sim_no_reparam <- function(nsub, mu_alpha, mu_rho, mu_omega, Ga, ntrials=12){ 
-    
+group_cc_sim_no_reparam <- function(nsub, mu_alpha, mu_rho, mu_omega, Ga){ 
+  
   # sample parameters
   alpha <- truncnorm::rtruncnorm(nsub, a=0, b=10, mean=mu_alpha, sd=1)
   rho <- truncnorm::rtruncnorm(nsub, a=0.001, b=0.999, mean=mu_rho, sd=.1)
   omega <- truncnorm::rtruncnorm(nsub, a=0.001, b=0.999, mean=mu_omega, sd=.1)
   
   # simulating the subject's behavior based on the sampled parameters
-  sim <- cc_sim(nsub, alpha, rho, omega, Ga, ntrials=ntrials)
+  sim <- cc_sim(nsub, alpha, rho, omega, Ga)
   
   # sample contribution from poisson
   group_contributions <- sim$c
