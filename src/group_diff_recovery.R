@@ -19,7 +19,7 @@ MPD <- function(x) {
 Ga <- compute_Ga()
 
 # Create an empty list for storing simulated data
-ndiff <- 2
+ndiff <- 10
 nsub <- 100
 sim_data <- vector("list", ndiff)
 
@@ -33,15 +33,13 @@ for (i in 1:ndiff) {
   )
 }
 
-
+print("[INFO]: Simulating group pairs")
 for (i in 1:ndiff) {
   
-  print(paste("[INFO]: Simulating  ", i, "/", ndiff, "  group pairs"))
-  
   # simulated diffs
-  sim_data[[i]]$diff$alpha <- runif(1, 0, 3)
-  sim_data[[i]]$diff$rho <- runif(1, 0, 0.4)
-  sim_data[[i]]$diff$omega <- runif(1, 0, 0.4)
+  sim_data[[i]]$diff$alpha <- runif(1, -3, 3)
+  sim_data[[i]]$diff$rho <- runif(1, -0.4, 0.4)
+  sim_data[[i]]$diff$omega <- runif(1, -0.4, 0.4)
   
   # simulated mids - make tight
   sim_data[[i]]$mid$alpha <- runif(1, 1.5, 3.5)
@@ -132,14 +130,14 @@ true_alpha_mid <- sapply(sim_data, function(x) x$mid$alpha)
 true_rho_mid <- sapply(sim_data, function(x) x$mid$rho)
 true_omega_mid <- sapply(sim_data, function(x) x$mid$omega)
 
-recov_df <- data.frame(parameter=factor(rep(c("alpha", "rho", "omega"), each=ndiff)),
+recov_df <- data.frame(parameter=rep(c("alpha", "rho", "omega"), each=ndiff),
                        true_diff=c(true_alpha_diff, true_rho_diff, true_omega_diff),
                        recov_diff=c(diff_alpha_recov, diff_rho_recov, diff_omega_recov),
                        true_mid=c(true_alpha_mid, true_rho_mid, true_omega_mid))
 
 save(recov_df, file="jags_output/recov_df.RData")
 
-recov_dfs <- split(df, f = df$parameter)
+recov_dfs <- split(recov_df, f = recov_df$parameter)
 
 diff_recov_plot(recov_dfs, filename="diff_recov_plot.png")
 
