@@ -1,0 +1,77 @@
+model {
+
+  # priors
+  diff_alpha ~ dnorm(0,1)
+  mid_alpha ~ dnorm(2.5,1)T(0,) # Andreas: dnorm(0,1)
+  lambda_alpha_1 ~ dgamma(.1,.1) 
+  lambda_alpha_2 ~ dgamma(.1,.1)
+  
+  diff_rho ~ dnorm(0,0.2) # very flat alt: dnorm(0,1)
+  mid_rho ~ dbeta(1,1)T(0.001,0.999) # Andreas: dnorm(0,1)
+  lambda_rho_1 ~ dgamma(.1,.1) 
+  lambda_rho_2 ~ dgamma(.1,.1) 
+  
+  diff_omega ~ dnorm(0,0.2) # very flat alt: dnorm(0,1)
+  mid_omega ~ dbeta(1,1)T(0.001,0.999) # Andreas: dnorm(0,1)
+  lambda_omega_1 ~ dgamma(.1,.1) 
+  lambda_omega_2 ~ dgamma(.1,.1)
+  
+  # group 1 model
+  for (s in 1:nsub_1) {
+    
+    # group-level means
+    mu_alpha_1 <- mid_alpha + (diff_alpha * -0.5)
+    mu_rho_1 <- mid_rho + (diff_rho * -0.5) 
+    mu_omega_1 <- mid_omega + (diff_omega * -0.5)
+    
+    # subject-level parameters
+  
+    alpha_1[s] ~ dnorm(mu_alpha_1, lambda_alpha_1)T(0,)
+    rho_1[s] ~ dnorm(mu_rho_1, lambda_rho_1)T(0,1) # Andreas: T(0,)
+    omega_1[s] ~ dnorm(mu_omega_1, lambda_omega_1)T(0,1) # Andreas: T(0,)
+    
+    # Gb for first trial
+    Gb_1[s,1] ~ dpois(alpha_1[s])
+    
+    # preference and contribution for first trial
+    p_1[s,1] <- (rho_1[s]*Gb_1[s,1])
+    c_1[s,1] ~ dpois(p_1[s,1])
+    
+    # modelling remaining trials
+    for (t in 2:12) {
+      Gb_1[s,t] <- ((1-omega_1[s])*(Gb_1[s,t-1]))+(omega_1[s]*(Ga[t-1]))
+      p_1[s,t] <- (rho_1[s]*Gb_1[s,t])
+      c_1[s,t] ~ dpois(p_1[s,t])
+    }
+  }
+  
+  # group 2 model
+  for (s in 1:nsub_2) {
+    
+    # group-level means
+    mu_alpha_2 <- mid_alpha + (diff_alpha * 0.5)
+    mu_rho_2 <- mid_rho + (diff_rho * 0.5)
+    mu_omega_2 <- mid_omega + (diff_omega * 0.5)
+    
+    # subject-level parameters
+  
+    alpha_2[s] ~ dnorm(mu_alpha_2, lambda_alpha_2)T(0,)
+    rho_2[s] ~ dnorm(mu_rho_2, lambda_rho_2)T(0,1) # Andreas: T(0,)
+    omega_2[s] ~ dnorm(mu_omega_2, lambda_omega_2)T(0,1) # Andreas: T(0,)
+    
+    # Gb for first trial
+    Gb_2[s,1] ~ dpois(alpha_2[s])
+    
+    # preference and contribution for first trial
+    p_2[s,1] <- (rho_2[s]*Gb_2[s,1])
+    c_2[s,1] ~ dpois(p_2[s,1])
+    
+    # modelling remaining trials
+    for (t in 2:12) {
+      Gb_2[s,t] <- ((1-omega_2[s])*(Gb_2[s,t-1]))+(omega_2[s]*(Ga[t-1]))
+      p_2[s,t] <- (rho_2[s]*Gb_2[s,t])
+      c_2[s,t] ~ dpois(p_2[s,t])
+    }
+  }
+  
+}
