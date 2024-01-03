@@ -2,7 +2,7 @@ model {
 
   # priors
   diff_alpha ~ dnorm(0,1)
-  mid_alpha ~ dgamma(4,2)
+  mid_alpha ~ dgamma(1,.01)
   
   diff_rho ~ dnorm(0,0.2) # Andreas: dnorm(0,1)
   mid_rho ~ dbeta(1,1)T(0.001,0.999) 
