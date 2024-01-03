@@ -3,12 +3,7 @@
 # load libraries
 library(R2jags)
 library(parallel)
-library(extraDistr)
-library(IMIFA)
-library(cascsim)
 library(tidyverse)
-library(ggplot2)
-library(patchwork)
 
 source("src/simulation_functions.R")
 source("src/plot_functions.R")
@@ -43,15 +38,15 @@ for (i in 1:ndiff) {
   
   print(paste("[INFO]: Simulating  ", i, "/", ndiff, "  group pairs"))
   
-  # simulated diffs  CHANGE DISTS
-  sim_data[[i]]$diff$alpha <- rnorm(1, 0, 1)
-  sim_data[[i]]$diff$rho <- rnorm(1, 0, 1)
-  sim_data[[i]]$diff$omega <- rnorm(1, 0, 1)
+  # simulated diffs
+  sim_data[[i]]$diff$alpha <- runif(1, 0, 3)
+  sim_data[[i]]$diff$rho <- runif(1, 0, 0.4)
+  sim_data[[i]]$diff$omega <- runif(1, 0, 0.4)
   
-  # simulated mids  CHANGE DISTS
-  sim_data[[i]]$mid$alpha <- rnorm(1, 0, 1)
-  sim_data[[i]]$mid$rho <- rnorm(1, 0, 1)
-  sim_data[[i]]$mid$omega <- rnorm(1, 0, 1)
+  # simulated mids - make tight
+  sim_data[[i]]$mid$alpha <- runif(1, 1.5, 3.5)
+  sim_data[[i]]$mid$rho <- runif(1, 0.4, 0.6)
+  sim_data[[i]]$mid$omega <- runif(1, 0.4, 0.6)
   
   # simulate each group's subject contributions
   X <- c(-0.5, 0.5)
@@ -142,7 +137,7 @@ save(recov_df, file="jags_output/recov_df.RData")
 
 recov_dfs <- split(df, f = df$parameter)
 
-diff_recov_plot(recov_dfs)
+diff_recov_plot(recov_dfs, filename="diff_recov_plot.png")
 
 print("[INFO]: Finished.")
 
