@@ -19,7 +19,7 @@ MPD <- function(x) {
 Ga <- compute_Ga()
 
 # Create an empty list for storing simulated data
-ndiff <- 10
+ndiff <- 2
 nsub <- 100
 sim_data <- vector("list", ndiff)
 
@@ -53,9 +53,13 @@ for (i in 1:ndiff) {
   for (g in 1:2){
     
     # group means
-    sim_data[[i]]$groups_mu[[g]]$alpha <- sim_data[[i]]$mid$alpha + sim_data[[i]]$diff$alpha * X[g]
-    sim_data[[i]]$groups_mu[[g]]$rho <- sim_data[[i]]$mid$rho + sim_data[[i]]$diff$rho * X[g]
-    sim_data[[i]]$groups_mu[[g]]$omega <- sim_data[[i]]$mid$omega + sim_data[[i]]$diff$omega * X[g]
+    mu_alpha <- sim_data[[i]]$mid$alpha + sim_data[[i]]$diff$alpha * X[g]
+    mu_rho <- sim_data[[i]]$mid$rho + sim_data[[i]]$diff$rho * X[g]
+    mu_omega <- sim_data[[i]]$mid$omega + sim_data[[i]]$diff$omega * X[g]
+    
+    sim_data[[i]]$groups_mu[[g]]$alpha <- mu_alpha
+    sim_data[[i]]$groups_mu[[g]]$rho <- mu_rho
+    sim_data[[i]]$groups_mu[[g]]$omega <- mu_omega
     
     # simulate group contributions
     sim_data[[i]]$groups_c[[g]] <- group_cc_sim(nsub, mu_alpha, mu_rho, mu_omega, Ga)
@@ -103,7 +107,7 @@ for (i in 1:ndiff) {
   samples <- jags.parallel(data = data_list,
                   inits=NULL,
                   parameters.to.save = params,
-                  model.file ="src/group_diff_model.R", 
+                  model.file ="src/group_diff_model.txt", 
                   n.chains = 3,
                   n.iter=5000, n.burnin=1000, n.thin=1,
                   jags.seed=626)
