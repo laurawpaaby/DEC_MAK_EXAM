@@ -1,6 +1,6 @@
 model {
 
-  # priors
+  #### PRIORS ####
   diff_alpha ~ dnorm(0,1)
   mid_alpha ~ dgamma(1,.01)
   
@@ -10,42 +10,73 @@ model {
   diff_omega ~ dnorm(0,0.2) # Andreas: dnorm(0,1)
   mid_omega ~ dbeta(1,1)T(0.001,0.999)
   
-  # group 1 model
+  ##### GROUP 1 PARAMETERS ####
+  
+  # group-level means
+  mu_alpha_1 <- mid_alpha + (diff_alpha * -0.5)
+  mu_rho_1 <- mid_rho + (diff_rho * -0.5) 
+  mu_omega_1 <- mid_omega + (diff_omega * -0.5)
+  
+  # subject-level parameters
+  #----------alpha----------
+  
+  tau_alpha_1 ~ dgamma(0.01,0.01)
+  sigma_alpha_1 <- 1/sqrt(tau_alpha_1) 
+  
+  rate_alpha_1 <- ( mu_alpha_1 + sqrt( mu_alpha_1^2 + 4*sigma_alpha_1^2 ) )/
+    (2*sigma_alpha_1^2) 
+  shape_alpha_1 <- 1 + mu_alpha_1 * rate_alpha_1
+  
+  #----------rho----------
+  
+  sigma_rho_1 ~ dunif(1,100)
+  
+  shape1_rho_1 <- (mu_rho_1) * sigma_rho_1
+  shape2_rho_1 <- (1 - mu_rho_1) * sigma_rho_1
+  
+  #----------omega----------
+  
+  sigma_omega_1 ~ dunif(1,100)
+  
+  shape1_omega_1 <- (mu_omega_1) * sigma_omega_1
+  shape2_omega_1 <- (1 - mu_omega_1) * sigma_omega_1
+  
+  #### GROUP 2 PARAMETERS ####
+  
+  # group-level means
+  mu_alpha_2 <- mid_alpha + (diff_alpha * 0.5)
+  mu_rho_2 <- mid_rho + (diff_rho * 0.5)
+  mu_omega_2 <- mid_omega + (diff_omega * 0.5)
+  
+  # subject-level parameters
+  #----------alpha----------
+  
+  tau_alpha_2 ~ dgamma(0.01,0.01)
+  sigma_alpha_2 <- 1/sqrt(tau_alpha_2)
+  
+  rate_alpha_2 <- ( mu_alpha_2 + sqrt( mu_alpha_2^2 + 4*sigma_alpha_2^2 ) )/
+    (2*sigma_alpha_2^2)
+  shape_alpha_2 <- 1 + mu_alpha_2 * rate_alpha_2
+  
+  #----------rho----------
+  
+  sigma_rho_2 ~ dunif(1,100)
+  
+  shape1_rho_2 <- (mu_rho_2) * sigma_rho_2
+  shape2_rho_2 <- (1 - mu_rho_2) * sigma_rho_2
+  
+  #----------omega----------
+  
+  sigma_omega_2 ~ dunif(1,100)
+  
+  shape1_omega_2 <- (mu_omega_2) * sigma_omega_2
+  shape2_omega_2 <- (1 - mu_omega_2) * sigma_omega_2
+  
+  #### GROUP 1 MODEL ####
   for (s in 1:nsub_1) {
-    
-    # group-level means
-    mu_alpha_1 <- mid_alpha + (diff_alpha * -0.5)
-    mu_rho_1 <- mid_rho + (diff_rho * -0.5) 
-    mu_omega_1 <- mid_omega + (diff_omega * -0.5)
-    
-    # subject-level parameters
-    #----------alpha----------
-    
-    tau_alpha_1 ~ dgamma(0.01,0.01)
-    sigma_alpha_1 <- 1/sqrt(tau_alpha_1) 
-    
-    rate_alpha_1 <- ( mu_alpha_1 + sqrt( mu_alpha_1^2 + 4*sigma_alpha_1^2 ) )/
-      (2*sigma_alpha_1^2) 
-    shape_alpha_1 <- 1 + mu_alpha_1 * rate_alpha_1
   
     alpha_1[s] ~ dgamma(shape_alpha_1, rate_alpha_1)
-    
-    #----------rho----------
-    
-    sigma_rho_1 ~ dunif(1,100)
-    
-    shape1_rho_1 <- (mu_rho_1) * sigma_rho_1
-    shape2_rho_1 <- (1 - mu_rho_1) * sigma_rho_1
-    
     rho_1[s] ~ dbeta(shape1_rho_1, shape2_rho_1)
-    
-    #----------omega----------
-    
-    sigma_omega_1 ~ dunif(1,100)
-    
-    shape1_omega_1 <- (mu_omega_1) * sigma_omega_1
-    shape2_omega_1 <- (1 - mu_omega_1) * sigma_omega_1
-    
     omega_1[s] ~ dbeta(shape1_omega_1, shape2_omega_1)
     
     # Gb for first trial
@@ -63,42 +94,11 @@ model {
     }
   }
   
-  # group 2 model
+  #### GROUP 2 MODEL ####
   for (s in 1:nsub_2) {
     
-    # group-level means
-    mu_alpha_2 <- mid_alpha + (diff_alpha * 0.5)
-    mu_rho_2 <- mid_rho + (diff_rho * 0.5)
-    mu_omega_2 <- mid_omega + (diff_omega * 0.5)
-    
-    # subject-level parameters
-    #----------alpha----------
-    
-    tau_alpha_2 ~ dgamma(0.01,0.01)
-    sigma_alpha_2 <- 1/sqrt(tau_alpha_2)
-    
-    rate_alpha_2 <- ( mu_alpha_2 + sqrt( mu_alpha_2^2 + 4*sigma_alpha_2^2 ) )/
-      (2*sigma_alpha_2^2)
-    shape_alpha_2 <- 1 + mu_alpha_2 * rate_alpha_2
-    
     alpha_2[s] ~ dgamma(shape_alpha_2, rate_alpha_2)
-    
-    #----------rho----------
-    
-    sigma_rho_2 ~ dunif(1,100)
-    
-    shape1_rho_2 <- (mu_rho_2) * sigma_rho_2
-    shape2_rho_2 <- (1 - mu_rho_2) * sigma_rho_2
-    
     rho_2[s] ~ dbeta(shape1_rho_2, shape2_rho_2)
-    
-    #----------omega----------
-    
-    sigma_omega_2 ~ dunif(1,100)
-    
-    shape1_omega_2 <- (mu_omega_2) * sigma_omega_2
-    shape2_omega_2 <- (1 - mu_omega_2) * sigma_omega_2
-    
     omega_2[s] ~ dbeta(shape1_omega_2, shape2_omega_2)
     
     # Gb for first trial
