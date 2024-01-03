@@ -92,11 +92,11 @@ diff_recov_plot <- function(dfs, filename="diff_recov_plot.png") {
       geom_point(aes(color = true_mid)) +
       geom_abline(intercept = 0, slope = 1, color = "black", lwd = 0.2) +
       theme_bw() +
-      facet_wrap(~ label_parsed_delta(parameter), ncol = 1)#, labeller = label_parsed_delta) +
+      facet_wrap(~ label_parsed_delta(parameter), ncol = 1) +
       theme(strip.background = element_rect(fill = "transparent", colour = NA),
             strip.text = element_text(size = 18, face = "bold"),
             axis.title = element_text(size = 8),
-            legend.position = c(0.78, 0.08),
+            legend.position = c(0.78, 0.11),
             legend.direction = "horizontal",
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank()) +
@@ -105,13 +105,14 @@ diff_recov_plot <- function(dfs, filename="diff_recov_plot.png") {
                                                     title.hjust = 0.5,
                                                     title.vjust = 0.5,
                                                     title.theme = element_text(size = 8),
+                                                    label.theme = element_text(size = 7),
                                                     barwidth = 5,
                                                     barheight = 0.5,
-                                                    label.theme = element_text(size = 7)))
+                                                    label.theme = element_text(size = 7, angle = -45, hjust = 0.5, vjust = 0.5)))
     
   })
   
-  plot <- wrap_plots(gg_l, ncol = 3, nrow = 1)
+  plot <- wrap_plots(gg_l[c(1,3,2)], ncol = 3, nrow = 1)
   
   ggsave(paste0("plots/", filename), width = 12, height = 4.5)
   print(paste0("[INFO]: Saved plots/",filename))
@@ -128,13 +129,15 @@ group_diffs_plot <- function(df){
   ylab('') +
   xlab('') +
   theme_bw() +
-  facet_wrap(~parameter, ncol=3, scales="free_x") +
+  facet_wrap(~label_parsed(parameter), ncol=3, scales="free_x") +
   theme(panel.grid.major.y = element_blank(),
         panel.grid.minor.y = element_blank(),
         panel.grid.minor.x = element_blank(),
         strip.background = element_rect(fill = "transparent", colour = NA),
-        strip.text = element_text(size = 12, face = "bold")) +
-  scale_y_discrete(breaks = NULL)
+        strip.text = element_text(size = 12, face = "bold"),
+        ) +
+  scale_y_discrete(breaks = NULL) +
+  labs(color="Sign")
   
   ggsave("plots/sim_group_diffs.png", width = 7, height = 3)
   print("[INFO]: Saved plots/sim_group_diffs.png")
