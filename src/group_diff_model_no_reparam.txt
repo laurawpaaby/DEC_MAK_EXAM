@@ -16,16 +16,16 @@ model {
   lambda_omega_1 ~ dgamma(.1,.1) 
   lambda_omega_2 ~ dgamma(.1,.1)
   
-  # group 1 model
+  #### GROUP 1 MODEL ####
+  
+  # group-level means
+  mu_alpha_1 <- mid_alpha + (diff_alpha * -0.5)
+  mu_rho_1 <- mid_rho + (diff_rho * -0.5) 
+  mu_omega_1 <- mid_omega + (diff_omega * -0.5)
+  
   for (s in 1:nsub_1) {
     
-    # group-level means
-    mu_alpha_1 <- mid_alpha + (diff_alpha * -0.5)
-    mu_rho_1 <- mid_rho + (diff_rho * -0.5) 
-    mu_omega_1 <- mid_omega + (diff_omega * -0.5)
-    
     # subject-level parameters
-  
     alpha_1[s] ~ dnorm(mu_alpha_1, lambda_alpha_1)T(0,)
     rho_1[s] ~ dnorm(mu_rho_1, lambda_rho_1)T(0,1) # Andreas: T(0,)
     omega_1[s] ~ dnorm(mu_omega_1, lambda_omega_1)T(0,1) # Andreas: T(0,)
@@ -45,16 +45,17 @@ model {
     }
   }
   
-  # group 2 model
-  for (s in 1:nsub_2) {
     
-    # group-level means
-    mu_alpha_2 <- mid_alpha + (diff_alpha * 0.5)
-    mu_rho_2 <- mid_rho + (diff_rho * 0.5)
-    mu_omega_2 <- mid_omega + (diff_omega * 0.5)
-    
-    # subject-level parameters
+  #### GROUP 2 MODEL ####
   
+  # group-level means
+  mu_alpha_2 <- mid_alpha + (diff_alpha * 0.5)
+  mu_rho_2 <- mid_rho + (diff_rho * 0.5)
+  mu_omega_2 <- mid_omega + (diff_omega * 0.5)
+  
+  for (s in 1:nsub_2) {
+  
+    # subject-level parameters
     alpha_2[s] ~ dnorm(mu_alpha_2, lambda_alpha_2)T(0,)
     rho_2[s] ~ dnorm(mu_rho_2, lambda_rho_2)T(0,1) # Andreas: T(0,)
     omega_2[s] ~ dnorm(mu_omega_2, lambda_omega_2)T(0,1) # Andreas: T(0,)
