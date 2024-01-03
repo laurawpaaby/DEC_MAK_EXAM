@@ -63,7 +63,7 @@ sim_sub_plot <- function(c){
 
 
 
-sub_recov_plot <- function(df){
+sub_recov_plot <- function(df, filename="sub_recov.png"){
   
   ggplot(df, aes(true, recov)) +
     geom_point() +
@@ -78,13 +78,13 @@ sub_recov_plot <- function(df){
     labs(x = "True", y = "Recovered")
   
   # save
-  ggsave("plots/sub_recov.png", width = 12, height = 4.3)
-  print("[INFO]: Saved plots/sub_recov.png")
+  ggsave(paste0("plots/", filename), width = 12, height = 4.3)
+  print(paste0("[INFO]: Saved plots/",filename))
 }
 
 
 
-diff_recov_plot <- function(dfs) {
+diff_recov_plot <- function(dfs, filename="diff_recov_plot.png") {
   
   gg_l = lapply(dfs, function(x) {
     
@@ -113,8 +113,8 @@ diff_recov_plot <- function(dfs) {
   
   plot <- wrap_plots(gg_l, ncol = 3, nrow = 1)
   
-  ggsave("plots/diff_recov.png", width = 12, height = 4.5)
-  print("[INFO]: Saved plots/diff_recov.png")
+  ggsave(paste0("plots/", filename), width = 12, height = 4.5)
+  print(paste0("[INFO]: Saved plots/",filename))
 }
 
 
@@ -136,6 +136,6 @@ group_diffs_plot <- function(df){
         strip.text = element_text(size = 12, face = "bold")) +
   scale_y_discrete(breaks = NULL)
   
-  ggsave("plots/group_diffs.png", width = 7, height = 3)
-  print("[INFO]: Saved plots/group_diffs.png")
+  ggsave("plots/sim_group_diffs.png", width = 7, height = 3)
+  print("[INFO]: Saved plots/sim_group_diffs.png")
 }
