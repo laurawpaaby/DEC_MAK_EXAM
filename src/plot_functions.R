@@ -1,5 +1,6 @@
 library(ggplot2)
 library(patchwork)
+library(RColorBrewer)
 
 
 
@@ -23,20 +24,8 @@ label_parsed_delta <- function(x) {
 }
 
 
-#label_parsed_delta <- function(x) {
-#  parsed_param <- gsub("alpha", "\U03B1", x)
-#  parsed_param <- gsub("rho", "\U03C1", parsed_param)
-#  parsed_param <- gsub("omega", "\U03C9", parsed_param)
-  
-#  parsed_param <- paste0("\U0394", parsed_param)
-  
-#  parsed_param
-  
-#}
 
-
-
-sim_sub_plot <- function(c){
+sim_sub_plot <- function(c, filename="sim_sub_plot.png"){
   
   c_avg <- colMeans(c)
   
@@ -57,8 +46,8 @@ sim_sub_plot <- function(c){
     ylim(-1, 3) +
     scale_x_continuous(breaks = 1:12)
 
-  ggsave("plots/sim_sub_plot.png", width = 6, height = 4)
-  print("[INFO]: Saved plots/sim_sub_plot.png")
+  ggsave(paste0("plots/", filename), width = 6, height = 4)
+  print(paste0("[INFO]: Saved plots/", filename))
 }
 
 
@@ -105,10 +94,9 @@ diff_recov_plot <- function(dfs, filename="diff_recov_plot.png") {
                                                     title.hjust = 0.5,
                                                     title.vjust = 0.5,
                                                     title.theme = element_text(size = 8),
-                                                    label.theme = element_text(size = 7),
                                                     barwidth = 5,
                                                     barheight = 0.5,
-                                                    label.theme = element_text(size = 7, angle = -45, hjust = 0.5, vjust = 0.5)))
+                                                    label.theme = element_text(size = 7, angle = -45, hjust = 0, vjust = 1)))
     
   })
   
@@ -120,7 +108,7 @@ diff_recov_plot <- function(dfs, filename="diff_recov_plot.png") {
 
 
 
-group_diffs_plot <- function(df){
+group_diffs_plot <- function(df, filename="sim_group_diffs.png"){
   ggplot() +
   geom_linerange(data = group_df_for_plot,
                  aes(xmin = first, xmax = second, 
@@ -139,6 +127,48 @@ group_diffs_plot <- function(df){
   scale_y_discrete(breaks = NULL) +
   labs(color="Sign")
   
-  ggsave("plots/sim_group_diffs.png", width = 7, height = 3)
-  print("[INFO]: Saved plots/sim_group_diffs.png")
+  ggsave(paste0("plots/", filename), width = 7, height = 3)
+  print(paste0("[INFO]: Saved plots/",filename))
+}
+
+post_diff_plot <- function(df, filename = "posterior_dens_diffs.png"){
+  
+  ggplot(df, aes(x=samples)) +
+  geom_density() +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") +
+  facet_wrap(~label_parsed_delta(parameter), nrow=3, scales = "free_y") +
+  theme_bw() +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        strip.background = element_rect(fill = "transparent", colour = NA),
+        strip.text = element_text(size = 12, face = "bold")) +
+  labs(x = "", y = "Density")
+  
+  # save
+  ggsave(paste0("plots/", filename), width = 7, height = 6)
+  print(paste0("[INFO]: Saved plots/",filename))
+}
+
+
+
+post_mean_plot <- function(df, filename = "posterior_dens_means.png"){
+  
+  my_palette <- brewer.pal(3, "Paired") # 3 to avoid warning, only 2 are needed
+  
+  ggplot(df, aes(x=samples, color=group)) +
+  geom_density() +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") +
+  facet_wrap(~parameter, nrow=3, scales = "free_y") +
+  theme_bw() +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        strip.background = element_rect(fill = "transparent", colour = NA),
+        strip.text = element_text(size = 12, face = "bold")) +
+  labs(x = "", y = "Density", color="Group") +
+  scale_color_manual(values = my_palette)
+  
+  ggsave(paste0("plots/", filename), width = 7, height = 6)
+  print(paste0("[INFO]: Saved plots/", filename))
 }

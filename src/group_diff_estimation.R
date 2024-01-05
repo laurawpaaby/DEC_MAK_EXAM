@@ -5,7 +5,8 @@ library(R2jags)
 library(parallel)
 library(extraDistr)
 library(tidyverse)
-library(ggplot2)
+
+source("src/simulation_functions.R")
 
 set.seed(626)
 
@@ -41,7 +42,7 @@ nsub_1 <- nrow(c_1)
 nsub_2 <- nrow(c_2)
 
 # Ga
-Ga <- compute_Ga()
+Ga <- compute_Ga(ntrials=12)
 
 # define data for JAGS
 data_list <- list(Ga = Ga,
@@ -54,11 +55,13 @@ data_list <- list(Ga = Ga,
 params <- c("diff_alpha", "diff_rho", "diff_omega")
 
 # run JAGS
+print("[INFO]: Parameter estimation...")
+
 start_time = Sys.time()
 samples <- jags.parallel(data = data_list,
                          inits=NULL,
                          parameters.to.save = params,
-                         model.file ="src/group_diff_model.R", 
+                         model.file ="src/group_diff_model.txt", 
                          n.chains = 3,
                          n.iter=5000, n.burnin=1000, n.thin=1,
                          jags.seed = 626)
@@ -69,11 +72,15 @@ print(paste("[INFO]: Duration of model estimation was", round(duration, 2)))
 
 # save samples
 save(samples, file = "jags_output/group_diff_estimation.RData")
+print("[INFO]: Saved jags_output/group_diff_estimation.RData.")
 
-# plot posterior distribution of each parameter
-plot(samples) # PRETTIFY
+# plot posterior density of differences
+df <- data.frame(parameter=rep(c("alpha", "rho", "omega"), each=12000),
+                  samples = c(as.vector(samples$BUGSoutput$sims.list$diff_alpha), 
+                              as.vector(samples$BUGSoutput$sims.list$diff_rho), 
+                              as.vector(samples$BUGSoutput$sims.list$diff_omega)))
 
-# LOOK AT MODULE4/GROUP COMPARISON/ORL_COMPARE.R for savage dickey example
+post_diff_plot(df)
 
-print("[INFO]: Finished. Saved model output.")
+print("[INFO]: Finished.")
 
