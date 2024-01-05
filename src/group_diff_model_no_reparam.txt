@@ -2,16 +2,16 @@ model {
 
   # priors
   diff_alpha ~ dnorm(0,1)
-  mid_alpha ~ dnorm(2.5,1)T(0,) # Andreas: dnorm(0,1)
+  mid_alpha ~ dnorm(0,0.06)T(0,) # corresponds to sd~4, Andreas: dnorm(0,1)
   lambda_alpha_1 ~ dgamma(.1,.1) 
   lambda_alpha_2 ~ dgamma(.1,.1)
   
-  diff_rho ~ dnorm(0,0.2) # very flat alt: dnorm(0,1)
+  diff_rho ~ dnorm(0,1)
   mid_rho ~ dbeta(1,1)T(0.001,0.999) # Andreas: dnorm(0,1)
   lambda_rho_1 ~ dgamma(.1,.1) 
   lambda_rho_2 ~ dgamma(.1,.1) 
   
-  diff_omega ~ dnorm(0,0.2) # very flat alt: dnorm(0,1)
+  diff_omega ~ dnorm(0,1)
   mid_omega ~ dbeta(1,1)T(0.001,0.999) # Andreas: dnorm(0,1)
   lambda_omega_1 ~ dgamma(.1,.1) 
   lambda_omega_2 ~ dgamma(.1,.1)

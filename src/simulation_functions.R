@@ -1,5 +1,4 @@
 library(extraDistr)
-library(IMIFA)
 library(cascsim)
 library(truncnorm)
 
@@ -37,20 +36,15 @@ cc_sim <- function(nsub, alpha, rho, omega, Ga){
   # empty array for trial-wise belief about others' contribution
   Gb <- array(NA, c(nsub, ntrials))
   
-  # lengthen Ga if needed
-  if (ntrials != 12){
-    rest <- round(((ntrials/12 - floor(ntrials/12))*12), 1)
-    Ga <- c(rep(Ga, floor(ntrials/12)), Ga[1:rest])
-  }
   
   for (s in 1:nsub){
   
   # Gb for first trial
-  Gb[s,1] <- extraDistr::rtpois(1,alpha[s],-1,3)
+  Gb[s,1] <- rpois(1, alpha[s]) #extraDistr::rtpois(1,alpha[s],-1,3)
   
   # contribution for first trial
   p <- rho[s]*Gb[s,1]
-  c[s,1] <- extraDistr::rtpois(1,p,-1,3)
+  c[s,1] <- rpois(1, p) #extraDistr::rtpois(1,p,-1,3)
   
     # simulating subject behavior in remaining trials
     for (t in 2:ntrials) {
@@ -62,7 +56,7 @@ cc_sim <- function(nsub, alpha, rho, omega, Ga){
         p <- rho[s]*Gb[s,t]
         
         # sample contribution from poisson
-        c[s,t] <- extraDistr::rtpois(1,p,-1,3)
+        c[s,t] <- rpois(1,p) #extraDistr::rtpois(1,p,-1,3)
     }
   }
   
@@ -98,14 +92,14 @@ group_cc_sim <- function(nsub, mu_alpha, mu_rho, mu_omega, Ga){
   shape2_omega <- (1 - mu_omega) * sigma_omega
     
   # sample parameters
-  alpha <- IMIFA::rltrgamma(nsub, shape_alpha, rate_alpha, trunc=0.001)
+  alpha <- rgamma(nsub, shape_alpha, rate=rate_alpha)
   rho <- cascsim::rtbeta(nsub, shape1_rho, shape2_rho, min=0.001, max=0.999) 
   omega <- cascsim::rtbeta(nsub, shape1_omega, shape2_omega, min=0.001, max=0.999)
   
   # simulating the subject's behavior based on the sampled parameters
   sim <- cc_sim(nsub, alpha, rho, omega, Ga)
   
-  # sample contribution from poisson
+  # extract contributions
   group_contributions <- sim$c
   
   return(group_contributions)

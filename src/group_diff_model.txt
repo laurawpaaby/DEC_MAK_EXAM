@@ -1,14 +1,15 @@
 model {
 
   #### PRIORS ####
-  diff_alpha ~ dnorm(0,1)
+  diff_alpha ~ dnorm(0,0.1)
   mid_alpha ~ dgamma(1,.01)
   
-  diff_rho ~ dnorm(0,0.2) # Andreas: dnorm(0,1)
+  diff_rho ~ dnorm(0,1)
   mid_rho ~ dbeta(1,1)T(0.001,0.999) 
   
-  diff_omega ~ dnorm(0,0.2) # Andreas: dnorm(0,1)
+  diff_omega ~ dnorm(0,1)
   mid_omega ~ dbeta(1,1)T(0.001,0.999)
+  
   
   ##### GROUP 1 PARAMETERS ####
   
@@ -41,6 +42,7 @@ model {
   shape1_omega_1 <- (mu_omega_1) * sigma_omega_1
   shape2_omega_1 <- (1 - mu_omega_1) * sigma_omega_1
   
+  
   #### GROUP 2 PARAMETERS ####
   
   # group-level means
@@ -72,7 +74,9 @@ model {
   shape1_omega_2 <- (mu_omega_2) * sigma_omega_2
   shape2_omega_2 <- (1 - mu_omega_2) * sigma_omega_2
   
+  
   #### GROUP 1 MODEL ####
+  
   for (s in 1:nsub_1) {
   
     alpha_1[s] ~ dgamma(shape_alpha_1, rate_alpha_1)
@@ -94,7 +98,9 @@ model {
     }
   }
   
+  
   #### GROUP 2 MODEL ####
+  
   for (s in 1:nsub_2) {
     
     alpha_2[s] ~ dgamma(shape_alpha_2, rate_alpha_2)

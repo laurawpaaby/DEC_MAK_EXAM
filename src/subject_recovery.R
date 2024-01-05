@@ -23,7 +23,7 @@ Ga <- compute_Ga(ntrials=12)
 nsub <- 100
 
 # define parameter values for simulation
-alpha <- runif(nsub,0.6,6)
+alpha <- runif(nsub,0,3) #runif(nsub,0.6,6)
 rho <- runif(nsub,0.1,0.9)
 omega <- runif(nsub,0.1,0.9)
 
@@ -32,7 +32,7 @@ sim_data <- cc_sim(nsub, alpha, rho, omega, Ga)
 c <- sim_data$c
 
 # visualize simulated subjects
-#sim_sub_plot(c)
+sim_sub_plot(c, filename="sim_sub_plot.png")
 
 # recover subject-level parameters
 data_list <- list(
@@ -47,7 +47,7 @@ start_time = Sys.time()
 samples <- jags.parallel(data = data_list,
                         inits=NULL,
                         parameters.to.save = params,
-                        model.file ="src/subject_model_norm.txt", #remember to change ntrials in txt
+                        model.file ="src/subject_model.txt", #remember to change ntrials in txt
                         n.chains = 3,
                         n.iter=5000, n.burnin=1000, n.thin=1,
                         jags.seed = 626)
@@ -57,7 +57,7 @@ duration = end_time - start_time
 print(paste("[INFO]: Duration of estimation was", round(duration, 2)))
 
 # save samples
-#save(samples, file = "jags_output/sub_recov_samples.RData")
+save(samples, file = "jags_output/sub_recov_samples.RData")
 
 # extract recovered parameters
 alpha_recov <- array(NA, c(nsub))
@@ -77,7 +77,7 @@ df <- data.frame(
   recov = c(alpha_recov, rho_recov, omega_recov))
 
 # visualize recovered parameters vs. true parameters
-sub_recov_plot(df, filename="sub_recov_norm_12t.png")
+sub_recov_plot(df, filename="sub_recov.png")
 
 print("[INFO]: Finished.")
 

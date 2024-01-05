@@ -16,10 +16,10 @@ MPD <- function(x) {
 }
 
 # calculate Ga: trial-wise average contribution of other players
-Ga <- compute_Ga(ntrials=12)
+Ga <- compute_Ga(ntrials=100)
 
 # Create an empty list for storing simulated data
-ndiff <- 10
+ndiff <- 30
 nsub <- 100
 sim_data <- vector("list", ndiff)
 
@@ -82,7 +82,7 @@ group_df_for_plot <- data.frame(comparison=factor(rep(1:ndiff, 3)),
 group_df_for_plot$sign <- ifelse(group_df_for_plot$first < group_df_for_plot$second, "positive", "negative")
 
 # plot differences for each parameter
-group_diffs_plot(group_df_for_plot)
+group_diffs_plot(group_df_for_plot, filename="sim_group_diffs.png")
 
 # recover group diff parameter
 diff_alpha_recov <- array(NA, c(ndiff))
@@ -135,11 +135,11 @@ recov_df <- data.frame(parameter=rep(c("alpha", "rho", "omega"), each=ndiff),
                        recov_diff=c(diff_alpha_recov, diff_rho_recov, diff_omega_recov),
                        true_mid=c(true_alpha_mid, true_rho_mid, true_omega_mid))
 
-save(recov_df, file="jags_output/recov_df.RData")
+save(recov_df, file="jags_output/diff_recov_df.RData")
 
 recov_dfs <- split(recov_df, f = recov_df$parameter)
 
-diff_recov_plot(recov_dfs, filename="diff_recov_plot.png")
+diff_recov_plot(recov_dfs, filename="diff_recov.png")
 
 print("[INFO]: Finished.")
 
