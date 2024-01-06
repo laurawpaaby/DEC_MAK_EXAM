@@ -15,9 +15,9 @@ label_parsed <- function(x) {
 
 
 label_parsed_mean <- function(x) {
-  parsed_param <- gsub("alpha", "\U03BC_\U03B1", x)
-  parsed_param <- gsub("rho", "\U03BC_\U03C1", parsed_param)
-  parsed_param <- gsub("omega", "\U03BC_\U03C9", parsed_param)
+  parsed_param <- gsub("alpha", "\U03BC\U03B1", x)
+  parsed_param <- gsub("rho", "\U03BC\U03C1", parsed_param)
+  parsed_param <- gsub("omega", "\U03BC\U03C9", parsed_param)
   
   parsed_param
   
