@@ -14,6 +14,16 @@ label_parsed <- function(x) {
 }
 
 
+label_parsed_mean <- function(x) {
+  parsed_param <- gsub("alpha", "\U03BC_\U03B1", x)
+  parsed_param <- gsub("rho", "\U03BC_\U03C1", parsed_param)
+  parsed_param <- gsub("omega", "\U03BC_\U03C9", parsed_param)
+  
+  parsed_param
+  
+}
+
+
 label_parsed_delta <- function(x) {
   parsed_param <- gsub("alpha", "\U0394\U03B1", x)
   parsed_param <- gsub("rho", "\U0394\U03C1", parsed_param)
@@ -21,6 +31,12 @@ label_parsed_delta <- function(x) {
 
   parsed_param
 
+}
+
+
+
+MPD <- function(x) {
+  density(x)$x[which(density(x)$y==max(density(x)$y))]
 }
 
 
@@ -59,6 +75,27 @@ sub_recov_plot <- function(df, filename="sub_recov.png"){
     geom_abline(intercept = 0, slope = 1, color = "black", lwd = 0.2) +
     theme_bw() +
     facet_wrap(~ label_parsed(parameter), scales = "free") +
+    theme(strip.background = element_rect(fill = "transparent", colour = NA),
+          strip.text = element_text(size = 18, face = "bold"),
+          axis.title = element_text(size = 15),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank()) +
+    labs(x = "True", y = "Recovered")
+  
+  # save
+  ggsave(paste0("plots/", filename), width = 12, height = 4.3)
+  print(paste0("[INFO]: Saved plots/",filename))
+}
+
+
+
+mean_recov_plot <- function(df, filename="mean_recov.png"){
+  
+  ggplot(df, aes(true, recov)) +
+    geom_point() +
+    geom_abline(intercept = 0, slope = 1, color = "black", lwd = 0.2) +
+    theme_bw() +
+    facet_wrap(~ label_parsed_mean(parameter), scales = "free") +
     theme(strip.background = element_rect(fill = "transparent", colour = NA),
           strip.text = element_text(size = 18, face = "bold"),
           axis.title = element_text(size = 15),
@@ -117,7 +154,7 @@ group_diffs_plot <- function(df, filename="sim_group_diffs.png"){
   ylab('') +
   xlab('') +
   theme_bw() +
-  facet_wrap(~label_parsed(parameter), ncol=3, scales="free_x") +
+  facet_wrap(~label_parsed_delta(parameter), ncol=3, scales="free_x") +
   theme(panel.grid.major.y = element_blank(),
         panel.grid.minor.y = element_blank(),
         panel.grid.minor.x = element_blank(),
@@ -130,6 +167,8 @@ group_diffs_plot <- function(df, filename="sim_group_diffs.png"){
   ggsave(paste0("plots/", filename), width = 7, height = 3)
   print(paste0("[INFO]: Saved plots/",filename))
 }
+
+
 
 post_diff_plot <- function(df, filename = "posterior_dens_diffs.png"){
   
@@ -155,11 +194,11 @@ post_diff_plot <- function(df, filename = "posterior_dens_diffs.png"){
 post_mean_plot <- function(df, filename = "posterior_dens_means.png"){
   
   my_palette <- brewer.pal(3, "Paired") # 3 to avoid warning, only 2 are needed
+  my_palette <- my_palette[c(2,1)]
   
   ggplot(df, aes(x=samples, color=group)) +
   geom_density() +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "black") +
-  facet_wrap(~parameter, nrow=3, scales = "free_y") +
+  facet_wrap(~label_parsed_mean(parameter), nrow=3, scales = "free") +
   theme_bw() +
   theme(panel.grid.major.y = element_blank(),
         panel.grid.minor.y = element_blank(),

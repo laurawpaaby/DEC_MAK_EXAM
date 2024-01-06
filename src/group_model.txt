@@ -1,0 +1,57 @@
+model {
+  
+  #### PRIORS ####
+  mu_alpha ~ dgamma(1,.01)
+  mu_rho ~ dbeta(1,1)T(0.001,0.999) 
+  mu_omega ~ dbeta(1,1)T(0.001,0.999)
+  
+  
+  ##### SUBJECT-LEVEL VARIANCE PARAMETERS ####
+  
+  #----------alpha----------
+  
+  tau_alpha ~ dgamma(0.01,0.01)
+  sigma_alpha <- 1/sqrt(tau_alpha) 
+  
+  rate_alpha <- ( mu_alpha + sqrt( mu_alpha^2 + 4*sigma_alpha^2 ) )/
+    (2*sigma_alpha^2) 
+  shape_alpha <- 1 + mu_alpha * rate_alpha
+  
+  #----------rho----------
+  
+  sigma_rho ~ dunif(1,100)
+  
+  shape1_rho <- (mu_rho) * sigma_rho
+  shape2_rho <- (1 - mu_rho) * sigma_rho
+  
+  #----------omega----------
+  
+  sigma_omega ~ dunif(1,100)
+  
+  shape1_omega <- (mu_omega) * sigma_omega
+  shape2_omega <- (1 - mu_omega) * sigma_omega
+  
+  
+  #### MODEL ####
+  
+  for (s in 1:nsub) {
+    
+    alpha[s] ~ dgamma(shape_alpha, rate_alpha)
+    rho[s] ~ dbeta(shape1_rho, shape2_rho)
+    omega[s] ~ dbeta(shape1_omega, shape2_omega)
+    
+    # Gb for first trial
+    Gb[s,1] ~ dpois(alpha[s])
+    
+    # preference and contribution for first trial
+    p[s,1] <- (rho[s]*Gb[s,1])
+    c[s,1] ~ dpois(p[s,1])
+    
+    # modelling remaining trials
+    for (t in 2:12) {
+      Gb[s,t] <- ((1-omega[s])*(Gb[s,t-1]))+(omega[s]*(Ga[t-1]))
+      p[s,t] <- (rho[s]*Gb[s,t])
+      c[s,t] ~ dpois(p[s,t])
+    }
+  }
+}
