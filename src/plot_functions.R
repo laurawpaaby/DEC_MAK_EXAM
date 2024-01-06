@@ -41,7 +41,7 @@ MPD <- function(x) {
 
 
 
-sim_sub_plot <- function(c, filename="sim_sub_plot.png"){
+sim_sub_plot_rtpois <- function(c, filename="sim_sub_plot_rtpois.png"){
   
   c_avg <- colMeans(c)
   
@@ -62,6 +62,30 @@ sim_sub_plot <- function(c, filename="sim_sub_plot.png"){
     ylim(-1, 3) +
     scale_x_continuous(breaks = 1:12)
 
+  ggsave(paste0("plots/", filename), width = 6, height = 4)
+  print(paste0("[INFO]: Saved plots/", filename))
+}
+
+
+
+sim_sub_plot <- function(c, filename="sim_sub_plot.png"){
+  
+  c_avg <- colMeans(c)
+  
+  plot <- ggplot() +
+    geom_point(aes(x = 1:12, y = c_avg), size=2, shape="square") +
+    geom_line(aes(x = 1:12, y = c_avg), lwd=0.3) +
+    theme_bw() +
+    theme(panel.grid.minor.y = element_blank(),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor.x = element_blank(),
+          strip.background = element_rect(fill = "transparent", colour = NA),
+          strip.text = element_text(size = 12, face = "bold")) +
+    ylab("Average contribution") +
+    xlab("Trial") +
+    ylim(-2, 6) +
+    scale_x_continuous(breaks = 1:12)
+  
   ggsave(paste0("plots/", filename), width = 6, height = 4)
   print(paste0("[INFO]: Saved plots/", filename))
 }

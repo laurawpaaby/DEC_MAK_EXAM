@@ -32,6 +32,7 @@ sim_data <- cc_sim(nsub, alpha, rho, omega, Ga)
 c <- sim_data$c
 
 # visualize simulated subjects
+#sim_sub_plot_rtpois(c)
 sim_sub_plot(c, filename="sim_sub_plot.png")
 
 # recover subject-level parameters
