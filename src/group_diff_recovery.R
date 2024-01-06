@@ -16,7 +16,7 @@ MPD <- function(x) {
 }
 
 # calculate Ga: trial-wise average contribution of other players
-Ga <- compute_Ga(ntrials=100)
+Ga <- compute_Ga(ntrials=12)
 
 # Create an empty list for storing simulated data
 ndiff <- 30

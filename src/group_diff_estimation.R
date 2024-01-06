@@ -7,6 +7,7 @@ library(extraDistr)
 library(tidyverse)
 
 source("src/simulation_functions.R")
+source("src/plot_functions.R")
 
 set.seed(626)
 
