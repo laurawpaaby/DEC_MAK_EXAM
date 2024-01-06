@@ -56,9 +56,5 @@ rsconnect/
 # data
 pgg_bayes*
 
-# renv-related files
-renv/
-.Rprofile
-
 # token
 token.txt
