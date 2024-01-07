@@ -199,7 +199,7 @@ post_diff_plot <- function(df, filename = "posterior_dens_diffs.png"){
   ggplot(df, aes(x=samples)) +
   geom_density() +
   geom_vline(xintercept = 0, linetype = "dashed", color = "black") +
-  facet_wrap(~label_parsed_delta(parameter), nrow=3, scales = "free_y") +
+  facet_wrap(~label_parsed_delta(parameter), nrow=3, scales = "free") +
   theme_bw() +
   theme(panel.grid.major.y = element_blank(),
         panel.grid.minor.y = element_blank(),
