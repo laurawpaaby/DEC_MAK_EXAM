@@ -16,7 +16,7 @@ MPD <- function(x) {
 }
 
 # calculate Ga: trial-wise average contribution of other players
-Ga <- compute_Ga(ntrials=100)
+Ga <- compute_Ga(ntrials=12)
 
 # Create an empty list for storing simulated data
 ngroups <- 30
@@ -69,7 +69,7 @@ recov_df <- data.frame(parameter=rep(c("alpha", "rho", "omega"), each=ngroups),
                        true=c(mu_alpha, mu_rho, mu_omega),
                        recov=c(mu_alpha_recov, mu_rho_recov, mu_omega_recov))
 
-save(recov_df, file="jags_output/mean_recov_df_100t.RData")
+save(recov_df, file="jags_output/mean_recov_df.RData")
 
 mean_recov_plot(recov_df, filename = "mean_recov.png")
 
