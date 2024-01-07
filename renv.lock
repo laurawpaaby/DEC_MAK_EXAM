@@ -326,14 +326,14 @@
     },
     "cli": {
       "Package": "cli",
-      "Version": "3.6.1",
+      "Version": "3.6.2",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
         "R",
         "utils"
       ],
-      "Hash": "89e6d8219950eac806ae0c489052048a"
+      "Hash": "1216ac65ac55ec0058a6f75d7ca0fd52"
     },
     "clipr": {
       "Package": "clipr",
@@ -480,14 +480,14 @@
     },
     "digest": {
       "Package": "digest",
-      "Version": "0.6.33",
+      "Version": "0.6.29",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
         "R",
         "utils"
       ],
-      "Hash": "b18a9cf3c003977b0cc49d5e76ebe48d"
+      "Hash": "cf6b206a045a684728c3267ef7596190"
     },
     "dplyr": {
       "Package": "dplyr",
@@ -839,7 +839,7 @@
     },
     "htmltools": {
       "Package": "htmltools",
-      "Version": "0.5.6.1",
+      "Version": "0.5.7",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
@@ -852,7 +852,7 @@
         "rlang",
         "utils"
       ],
-      "Hash": "1e12fe667316a76508898839ecfb2d00"
+      "Hash": "2d7b3857980e0e0d0a1fd6f11928ab0f"
     },
     "httr": {
       "Package": "httr",
@@ -913,7 +913,7 @@
     },
     "knitr": {
       "Package": "knitr",
-      "Version": "1.45",
+      "Version": "1.39",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
@@ -921,11 +921,12 @@
         "evaluate",
         "highr",
         "methods",
+        "stringr",
         "tools",
         "xfun",
         "yaml"
       ],
-      "Hash": "1ec462871063897135c1bcbe0fc8f07d"
+      "Hash": "029ab7c4badd3cf8af69016b2ba27493"
     },
     "labeling": {
       "Package": "labeling",
@@ -1388,14 +1389,14 @@
     },
     "rlang": {
       "Package": "rlang",
-      "Version": "1.1.1",
+      "Version": "1.1.2",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
         "R",
         "utils"
       ],
-      "Hash": "a85c767b55f0bf9b7ad16c6d7baee5bb"
+      "Hash": "50a6dbdc522936ca35afc5e2082ea91b"
     },
     "rmarkdown": {
       "Package": "rmarkdown",
@@ -1818,14 +1819,14 @@
     },
     "xfun": {
       "Package": "xfun",
-      "Version": "0.41",
+      "Version": "0.31",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
         "stats",
         "tools"
       ],
-      "Hash": "460a5e0fe46a80ef87424ad216028014"
+      "Hash": "a318c6f752b8dcfe9fb74d897418ab2b"
     },
     "xml2": {
       "Package": "xml2",
