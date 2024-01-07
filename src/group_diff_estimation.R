@@ -14,6 +14,9 @@ set.seed(626)
 # load data
 data <- read.csv("pgg_bayes2023-12-06.csv")
 
+# presumably, the three entries with empty MAL status are non-maltreated if has to add up to 230
+data$MAL_Status[data$MAL_Status == ""] <- "non-malreated"
+
 # subtract 1 from all contributions
 data <- data %>%
   mutate_at(vars(starts_with("test")), list(~ . - 1))
