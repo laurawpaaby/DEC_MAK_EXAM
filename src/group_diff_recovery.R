@@ -37,12 +37,12 @@ print("[INFO]: Simulating group pairs")
 for (i in 1:ndiff) {
   
   # simulated diffs
-  sim_data[[i]]$diff$alpha <- runif(1, -3, 3)
+  sim_data[[i]]$diff$alpha <- runif(1, -2, 2)
   sim_data[[i]]$diff$rho <- runif(1, -0.4, 0.4)
   sim_data[[i]]$diff$omega <- runif(1, -0.4, 0.4)
   
   # simulated mids - make tight
-  sim_data[[i]]$mid$alpha <- runif(1, 1.5, 3.5)
+  sim_data[[i]]$mid$alpha <- runif(1, 1, 2)
   sim_data[[i]]$mid$rho <- runif(1, 0.4, 0.6)
   sim_data[[i]]$mid$omega <- runif(1, 0.4, 0.6)
   
@@ -82,7 +82,7 @@ group_df_for_plot <- data.frame(comparison=factor(rep(1:ndiff, 3)),
 group_df_for_plot$sign <- ifelse(group_df_for_plot$first < group_df_for_plot$second, "positive", "negative")
 
 # plot differences for each parameter
-group_diffs_plot(group_df_for_plot, filename="sim_group_diffs.png")
+group_diffs_plot(group_df_for_plot, filename="sim_group_diffs_12t.png")
 
 # recover group diff parameter
 diff_alpha_recov <- array(NA, c(ndiff))
