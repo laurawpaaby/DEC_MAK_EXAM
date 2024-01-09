@@ -67,7 +67,7 @@ end_time = Sys.time()
 duration = end_time - start_time
 print(paste("[INFO]: Duration of model estimation was", round(duration, 2)))
 
-
+save(samples1, file = "jags_output/nmt_estimation_samples.RData")
 
 print(paste("[INFO]: Estimating means of maltreated group"))
 
@@ -90,6 +90,7 @@ end_time = Sys.time()
 duration = end_time - start_time
 print(paste("[INFO]: Duration of model estimation was", round(duration, 2)))
 
+save(samples2, file = "jags_output/mt_estimation_samples.RData")
 
 # plot posterior density of means
 df <- data.frame(parameter = rep(c("alpha", "rho", "omega"), each=24000),
