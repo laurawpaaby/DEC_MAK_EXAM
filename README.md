@@ -29,7 +29,7 @@ Rscript src/group_diff_estimation.R
 ```
 
 ## Repository overview
-```bash
+```
 .
 ├── .gitignore
 ├── .Rprofile                                   <--- script related to environment setup
