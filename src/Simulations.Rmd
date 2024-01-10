@@ -33,20 +33,78 @@ $\alpha$ = Initial belief about others’ contribution
 
 
 ```{r}
-alpha<- c(1:5) # dictates the initial contribution of others (should be 0,3,6,9) => can either be manipulated somehow ?? or 0,1,2,3 and the rescaled. 
+alpha<- c(0.6, 1.5, 3, 5) # dictates the initial contribution of others (should be 0,3,6,9) => can either be manipulated somehow ?? or 0,1,2,3 and the rescaled.
 ```
 
 
 ```{r}
-#### inspecting the outcome dist 
+#### inspecting the poisson probability distribution by calculating the probability at each point using dtpois
+
+range = 0:3
+par(mfrow=c(1,4))
 for (i in alpha){
-  dist <- rtpois(ntrials, lambda=i, a = 0, b = 4) 
-  filtered_values <- dist#[dist %in% desired_values] # this is a very un-elegant way - cause samples for all but we pick the once we want 
-  hist(filtered_values, main = (sprintf("lambda = %s",i)))
+  p <- extraDistr::dtpois(range, lambda=i, a = -1, b = 3)
+  #plot(range, p, main = paste("alpha =", i), type = 'h', lwd = 5)
+  barplot(p, main = paste("alpha =", i), names.arg = c(0,1,2,3))
+}
+
+```
+
+Play around with regular poisson.
+```{r}
+alpha<- c(0.6, 1.5, 3, 5)
+
+# plot the regular poisson distribution for each lambda
+range = 0:10
+par(mfrow=c(1,4))
+for (i in alpha){
+  p <- dpois(range, lambda=i)
+  barplot(p, main = paste("alpha =", i), names.arg = range)
 }
 
 
 ```
+
+Find a reasonable gamma distribution for mid_alpha
+```{r}
+# plot PDF of gamma distribution
+x <- seq(0, 10, length.out = 1000)
+y <- dgamma(x, shape = 2, rate = 1)
+y1 <- dgamma(x, shape = 4, rate = 2)
+y2 <- dgamma(x, shape = 6, rate = 3)
+plot(x, y, type = "l", lwd = 2, col = "blue", xlab = "x", ylab = "PDF", ylim=c(0,0.7))
+lines(x, y1, lwd = 2, col = "red")
+lines(x, y2, lwd = 2, col = "green")
+```
+Find a reasonable normal distribution for diff_alpha
+```{r}
+# plot PDF of normal distribution
+x <- seq(-2, 2, length.out = 1000)
+y <- dnorm(x, mean = 0, sd = .1)
+y1 <- dnorm(x, mean = 0, sd = .15)
+y2 <- dnorm(x, mean = 0, sd = .2)
+plot(x, y, type = "l", lwd = 2, col = "blue", xlab = "x", ylab = "PDF", ylim=c(0,0.7))
+lines(x, y1, lwd = 2, col = "green")
+lines(x, y2, lwd = 2, col = "red")
+```
+```{r}
+samples <- truncnorm::rtruncnorm(1000, a=1, b=4, mean=2.5, sd=0.5)
+hist(samples, breaks = 20)
+```
+
+
+
+
+```{r}
+x <- seq(0, 100, length.out = 1000)
+y <- dgamma(x, shape = 1, rate = 0.01)
+y1 <- sqrt(1/y)
+#par(mfrow=c(2,1))
+plot(x, y, type = "l", lwd = 2, col = "blue", xlab = "x", ylab = "PDF")
+#plot(y, y1, type = "l", lwd = 2, col = "red", xlab = "x", ylab = "PDF", ylim = c(0,10))
+```
+
+
 
 
 
@@ -61,9 +119,11 @@ rho
 ```
 
 ```{r}
-#print(rho_samples)
-##### this is not so good - we need them to be stored in another way - they are just added one top of each other in the loop, but we need to do it in a way in which we can identify their shape parameters 
+x <- seq(0.001, 0.999, length.out = 1000)
+y <- dbeta(x,shape1 = 1, shape2 = 1)
+plot(x, y, type = "l", lwd = 2, col = "blue", xlab = "x", ylab = "PDF")
 ```
+
 
 ### Omega
 $\omega$ = Sensitivity or attentiveness to others’ contributions
