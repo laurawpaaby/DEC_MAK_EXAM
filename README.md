@@ -40,6 +40,7 @@ Rscript src/group_diff_estimation.R
 ├── renv/                                       <--- folder for storing project environment packages after using renv::restore()
 ├── renv.lock                                   <--- list of packages automatically added to environment by renv::restore()
 └── src/
+    ├── Simulations.Rmd                         <--- messy markdown for experimenting with distributions
     ├── group_diff_estimation.R
     ├── group_diff_model_no_reparam.txt         <--- unused Bayesian model
     ├── group_diff_model.txt
